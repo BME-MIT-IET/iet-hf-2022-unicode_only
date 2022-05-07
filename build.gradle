@@ -48,6 +48,8 @@ dependencies {
 	compile (group: "com.google.guava", name: "guava", version: "18.0") {
 		exclude group: "com.google.code.findbugs"
 	}
+	testCompile 'io.cucumber:cucumber-java8:7.0.0'
+	testCompile 'io.cucumber:cucumber-junit:7.0.0'
 
 	compile "commons-beanutils:commons-beanutils:1.9.2"
 	compile "commons-codec:commons-codec:1.10"
@@ -68,4 +70,21 @@ dependencies {
 
 tasks.withType(Test) {
 	systemProperties = System.getProperties()
+}
+
+configurations {
+	cucumberRuntime {
+		extendsFrom testRuntime
+	}
+}
+
+task cucumber() {
+	dependsOn assemble, testClasses
+	doLast {
+		javaexec {
+			main = "io.cucumber.core.cli.Main"
+			classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+			args = ['--plugin', 'pretty', '--glue', 'gradle.cucumber', 'src/test/resources']
+		}
+	}
 }
