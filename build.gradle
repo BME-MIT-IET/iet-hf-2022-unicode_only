@@ -2,10 +2,10 @@ apply plugin: "idea"
 apply plugin: "java"
 apply plugin: "maven"
 
-task wrapper(type: Wrapper) {
+/*task wrapper(type: Wrapper) {
 	gradleVersion = '2.0'
 	distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
-}
+}*/
 
 sourceSets {
 	main {
@@ -62,6 +62,7 @@ dependencies {
 
 	compile "org.slf4j:slf4j-api:1.7.7"
 	compile "org.slf4j:slf4j-jdk14:1.7.7"
+
 
 	testCompile 'junit:junit:4.11'
 }
