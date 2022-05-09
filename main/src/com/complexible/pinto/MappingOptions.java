@@ -73,3 +73,4 @@ public final class MappingOptions {
 	 */
 	public static final Option<Boolean> IGNORE_CARDINALITY_VIOLATIONS = Option.create("ignore.cardinality.violations", false);
 }
+

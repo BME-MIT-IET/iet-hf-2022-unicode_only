@@ -43,3 +43,4 @@ import java.lang.annotation.Target;
 public @interface Iri {
 	public String value();
 }
+

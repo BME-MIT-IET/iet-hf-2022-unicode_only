@@ -1257,3 +1257,4 @@ public final class RDFMapper {
 		}
 	}
 }
+

@@ -40,3 +40,4 @@ public interface SourcedObject {
 	 */
 	public void setSourceGraph(final Model theGraph);
 }
+
