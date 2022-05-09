@@ -1548,4 +1548,5 @@ public class RDFMapperTests {
 			}
 		}
 	}
+	
 }
