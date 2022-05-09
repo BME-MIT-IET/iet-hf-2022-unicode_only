@@ -67,3 +67,4 @@ public enum UUIDCodec implements RDFCodec<UUID> {
 		return null;
 	}
 }
+

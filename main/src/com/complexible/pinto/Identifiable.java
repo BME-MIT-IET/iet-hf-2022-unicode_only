@@ -40,3 +40,4 @@ public interface Identifiable {
 	 */
 	public void id(final Resource theResource);
 }
+

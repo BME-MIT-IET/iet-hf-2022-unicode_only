@@ -37,3 +37,4 @@ public class RDFMappingException extends RuntimeException {
 		super(theMessage, theCause);
 	}
 }
+
