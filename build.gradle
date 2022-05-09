@@ -1,7 +1,9 @@
-apply plugin: "idea"
-apply plugin: "java"
-apply plugin: "maven"
 
+plugins {
+	id "org.sonarqube" version "3.3"
+	id "idea"
+	id "java"
+}
 /*task wrapper(type: Wrapper) {
 	gradleVersion = '2.0'
 	distributionUrl = "http://services.gradle.org/distributions/gradle-${gradleVersion}-all.zip"
@@ -65,6 +67,14 @@ dependencies {
 
 
 	testCompile 'junit:junit:4.11'
+}
+
+sonarqube {
+	properties {
+		property "sonar.projectKey", "BME-MIT-IET_iet-hf-2022-unicode_only"
+		property "sonar.organization", "bme-mit-iet-org"
+		property "sonar.host.url", "https://sonarcloud.io"
+	}
 }
 
 tasks.withType(Test) {
