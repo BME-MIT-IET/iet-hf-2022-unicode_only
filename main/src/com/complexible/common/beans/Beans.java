@@ -139,7 +139,5 @@ public final class Beans {
 			}
 		};
 	}
-	public void tesztFv(){
-		System.out.print("testing. "); 
-	}
+	
 }
