@@ -1,9 +1,9 @@
-#Statikus analízis SonarCloud segítségével
+# Statikus analízis SonarCloud segítségével
 
 A projekt hibáinak és javítandó gyengeségeinek felderítéséhez a SonarCloud platformot használtuk.
 
 ---
-##A SonarCloud-ról röviden
+## A SonarCloud-ról röviden
 A SonarCloud egy felhőalapú kódelemző szolgáltatás, amely 25 különböző programozási nyelvben észleli a kódminőségi problémákat, folyamatosan biztosítva a kód karbantarthatóságát, megbízhatóságát és biztonságát.
 
 A statikus elemzést azért nevezzük statikusnak, mert nem támaszkodik a kód tényleges futtatására (a futó kód elemzését dinamikus elemzésnek nevezzük). Ennek eredményeképpen a SonarCloud az automatizált teszteléstől és az emberi kód-felülvizsgálattól eltérő, további ellenőrzési réteget kínál.
@@ -14,7 +14,7 @@ Bővebben: [sonarcloud.io](https://docs.sonarcloud.io/#what-is-sonarcloud)
 
 ---
 
-##Konfigurálás
+## Konfigurálás
 A projekt alapvetően nem volt SonarCloud kompatibilis. Ennek oka a Java 8 illetve a régebbi Gradle volt. A probléma megoldásához a következő lépéseket tettük. 
 
 - A SonarCloud dokumentációjának részletes elolvasása
