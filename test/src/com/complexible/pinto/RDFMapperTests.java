@@ -57,8 +57,7 @@ import java.util.SortedSet;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * <p></p>
@@ -417,7 +416,7 @@ public class RDFMapperTests {
 
 		Model aGraph = RDFMapper.create().writeValue(aPerson);
 
-		assertTrue(aPerson.id() != null);
+		assertNotNull(aPerson.id() );
 
 		assertEquals(1, aGraph.size());
 
@@ -660,37 +659,37 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	@Ignore
+	@Ignore("Not implemented yet")
 	public void testReadEnumSet() throws Exception {
 	}
 
 	@Test
-	@Ignore
+	@Ignore("Not implemented yet")
 	public void testWriteEnumSet() throws Exception {
 	}
 
 	@Test
-	@Ignore
+	@Ignore("Not implemented yet")
 	public void testReadCustomCollectionMapping() throws Exception {
 	}
 
 	@Test
-	@Ignore
+	@Ignore("Not implemented yet")
 	public void testWriteWithLangTag() throws Exception {
 	}
 
 	@Test
-	@Ignore
+	@Ignore("Not implemented yet")
 	public void testReadWithLangTag() throws Exception {
 	}
 
 	@Test(expected = RDFMappingException.class)
-	@Ignore
+	@Ignore("Not implemented yet")
 	public void testMultipleValuesForNonIterableProperty() throws Exception {
 	}
 
 	@Test(expected = RDFMappingException.class)
-	@Ignore
+	@Ignore("Not implemented yet")
 	public void testCharBeanTypeWithLongString() throws Exception {
 	}
 
