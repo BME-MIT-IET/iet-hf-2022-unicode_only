@@ -204,10 +204,9 @@ for (Map.Entry<String, Object> aEntry : PropertyUtils.describe(theValue).entrySe
 }
 ```
 
-
-
 #### Módosítások összesen
 
 - `instanceof` eliminálása
 - kiértékelések használata `continue` helyett
+- kiértékelés és értékvisszaadás helyett csak értékvisszadunk
 

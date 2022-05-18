@@ -770,7 +770,7 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	public void performanceTestOne(){
+	public void performanceTestBeansToRdfOne(){
 		ArrayList<Long> times = new ArrayList<>();
 
 		Person p = new Person("Peter");
@@ -796,18 +796,22 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	public void performanceTestTwo(){
+	public void performanceTestBeansToRdfThousand(){
 		ArrayList<Long> times = new ArrayList<>();
 
 		Person p = new Person("Peter");
+
+		int randomDestrutor = 0;
+		Random rand = new Random();
 
 		for(int j = 0; j < 3; ++j){
 			long start = System.nanoTime();
 
 			for(int i = 0; i < 1000; ++i) {
+				if(rand.nextInt(2) == 1)
+					randomDestrutor += 1;
+
 				Model m = RDFMapper.create().writeValue(p);
-				while(m != null)
-					m = RDFMapper.create().writeValue(p);
 			}
 			long finish = System.nanoTime();
 			times.add(finish - start);
@@ -824,18 +828,22 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	public void performanceTestThree(){
+	public void performanceTestBeansToRdfMillion(){
 		ArrayList<Long> times = new ArrayList<>();
 
 		Person p = new Person("Peter");
+
+		int randomDestrutor = 0;
+		Random rand = new Random();
 
 		for(int j = 0; j < 3; ++j){
 			long start = System.nanoTime();
 
 			for(int i = 0; i < 1000000; ++i) {
+				if(rand.nextInt(2) == 1)
+					randomDestrutor += 1;
+
 				Model m = RDFMapper.create().writeValue(p);
-				while(m != null)
-					m = RDFMapper.create().writeValue(p);
 			}
 			long finish = System.nanoTime();
 			times.add(finish - start);
@@ -852,17 +860,28 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	public void performanceTestFour(){
-		//TODO create 1 Beans from RDF and measure time
+	public void performanceTestRdfToBeansOne(){
+		ArrayList<Long> times = new ArrayList<>();
+
+
+
+		System.out.print("Elapsed time creating 1 000 000 RDFs from Beans: ");
+		long sum = 0;
+		for (Long time : times) {
+			sum += time;
+			System.out.print(time + "ns ");
+		}
+
+		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
 	}
 
 	@Test
-	public void performanceTestFive(){
+	public void performanceTestRdfToBeansThousand(){
 		//TODO create 1 000 Beans from RDF and measure time
 	}
 
 	@Test
-	public void performanceTestSix(){
+	public void performanceTestRdfToBeansMillions(){
 		//TODO create 1 000 000 Beans from RDF and measure time
 	}
 
