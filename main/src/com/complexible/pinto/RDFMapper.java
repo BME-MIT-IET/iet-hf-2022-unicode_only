@@ -181,26 +181,17 @@ public final class RDFMapper {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T readValue(final Model theGraph, final Class<T> theClass) {
+		if(theGraph.subjects().size() > 1)
+			throw new RDFMappingException("Multiple subjects found, need to specify the identifier of the object to create.");
+
 		RDFCodec<T> aCodec = (RDFCodec<T>) mCodecs.get(theClass);
 
-		final Collection<Resource> aSubjects = theGraph.subjects();
-
-		if (aSubjects.size() > 1) {
-			throw new RDFMappingException("Multiple subjects found, need to specify the identifier of the object to create.");
-		}
-		else if (aSubjects.isEmpty()) {
+		if (theGraph.subjects().isEmpty())
 			return aCodec == null ? newInstance(theClass)
-			                      : aCodec.readValue(theGraph, SimpleValueFactory.getInstance().createBNode());
-		}
+					: aCodec.readValue(theGraph, SimpleValueFactory.getInstance().createBNode());
 
-		final Resource aSubj = aSubjects.iterator().next();
-
-		if (aCodec != null) {
-			return aCodec.readValue(theGraph, aSubj);
-		}
-		else {
-			return readValue(theGraph, theClass, aSubj);
-		}
+		return aCodec != null ? aCodec.readValue(theGraph, theGraph.subjects().iterator().next())
+				: readValue(theGraph, theClass, theGraph.subjects().iterator().next());
 	}
 
 	private static boolean isIgnored(final PropertyDescriptor thePropertyDescriptor) {

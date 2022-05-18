@@ -289,10 +289,71 @@ public void performanceTestRdfToBeansMillions(){
 
 Az elégazásos módszer itt is segíthet, hogy a teszt pontosabb legyen kevesebb optimalizációval. 
 
+### Gyorsítás
+
+Az RDF-ből beolvasást a `readValue` függvény végzi, melynek az eredeti kódja az alábbi:
+
+```java
+public <T> T readValue(final Model theGraph, final Class<T> theClass) {
+    RDFCodec<T> aCodec = (RDFCodec<T>) mCodecs.get(theClass);
+
+    final Collection<Resource> aSubjects = theGraph.subjects();
+
+    if (aSubjects.size() > 1) {
+        throw new RDFMappingException("Multiple subjects found, need to specify the identifier of the object to create.");
+    }
+    else if (aSubjects.isEmpty()) {
+        return aCodec == null ? newInstance(theClass)
+                              : aCodec.readValue(theGraph, SimpleValueFactory.getInstance().createBNode());
+    }
+
+    final Resource aSubj = aSubjects.iterator().next();
+
+    if (aCodec != null) {
+        return aCodec.readValue(theGraph, aSubj);
+    }
+    else {
+        return readValue(theGraph, theClass, aSubj);
+    }
+}
+```
+
+Elsőként szembetűnik, hogy eltárolja a függvény az alanyokat egy változóban, majd a változón ellenőrzi, hogy több alany van-e 
+és kivételt dob, ha igen. Na most, ezt meg lehetne tenni már rögtön a függvény elején, hiszen 
+a többi rész úgy sem érdekel minket, hogyha kivételt dobtunk, és még csak változóban sem kell eltárolni ehhez semmit. 
+
+A második dolog amit megtehetünk, az az, hogy annak vizsgálatát, hogy van-e alany, szintén korábbanra vesszük a függvényben, 
+hiszen így nem kell előbb eltárolni az alanyokat lokális változóban, majd utána ellenőrizni, hogy mennyi van belőlük. 
+
+A harmadik eszközölt változtatás az az, hogy a végén látható `if - else if` ágat teljesen elimináljuk. 
+Ez nyelvi eszközökkel már írható egy sorban is, és a visszatérési értékhez felhasznált két lokális változó 
+sem létfontosságú, ezeket nem kell létrehozni, ezzel kevesebb memória írás - olvasást használva.
+
+A módosítások után a kvöetkező kódot kaptuk:
+
+```java
+public <T> T readValue(final Model theGraph, final Class<T> theClass) {
+    if(theGraph.subjects().size() > 1)
+        throw new RDFMappingException("Multiple subjects found, need to specify the identifier of the object to create.");
+
+    RDFCodec<T> aCodec = (RDFCodec<T>) mCodecs.get(theClass);
+
+    if (theGraph.subjects().isEmpty())
+        return aCodec == null ? newInstance(theClass) 
+                : aCodec.readValue(theGraph, SimpleValueFactory.getInstance().createBNode());
+
+    return aCodec != null ? aCodec.readValue(theGraph, theGraph.subjects().iterator().next())
+            : readValue(theGraph, theClass, theGraph.subjects().iterator().next());
+}
+```
+
+Kicsi módosítások ezek, de összességében sokat spórolhatunk velük.
+
 #### Módosítások összesen
-- asd
-- asd
-- asd
+- több alany vizsgálata már a függvény elején
+- annak vizsgálata, hogy léteznek-e alanyok a gráfban korábbra került
+- végső `if - else` egysorosítása
+- lokális változók minimalizálása
 
 # Összegzés
 
