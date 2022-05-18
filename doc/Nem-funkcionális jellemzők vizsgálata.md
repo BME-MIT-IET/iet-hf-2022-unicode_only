@@ -210,3 +210,95 @@ for (Map.Entry<String, Object> aEntry : PropertyUtils.describe(theValue).entrySe
 - kiértékelések használata `continue` helyett
 - kiértékelés és értékvisszaadás helyett csak értékvisszadunk
 
+## RDF -> Beans tesztek
+
+Az alábbi tesztekkel a korábbi ellentettjét fogjuk vizsgálni, azaz, hogy mennyire hatékony az objektumok visszalakítása RDF-ből.
+
+### 1 Person objektum létrehozása RDF-ből
+
+Nézzük is meg, hogy mennyi időbe telik egy objektum -> RDF konverzió:
+
+![](img/performance/perf5.png)
+
+Azt kaptuk, hogy átlagosan 19986 nanoszekundum. Itt most úgy néz ki, hogy a nagyságrendek 
+tekintetében nincs eltérés a három mért érték között. Az viszont már sokkal érdekesebb, hogy minden esetben jelentősen hosszabb ideig, 
+egy nagyságrenddel tovább tart ez a konverziót, mint a korábban megismert inverze. Ez több okból is lehet, 
+de ehhez meg kell vizsgálnunk a konverziót végző kódot. (erre később visszatérünk)
+
+### 1 000 Person objektum létrehozása RDF-ből
+
+![](img/performance/perf6.png)
+
+Itt is szembesülünk azzal, hogy az első mérés nagyságrendekkel tovább tarttott, 
+mint a másik kettő, ezért ettől tekintsünk el. Vessük össze az itt kapott adatokat a konverzió inverzével. 
+Ha csak az utolsó két mérés eredményét nézzük, akkor azt látjuk, hogy kb. ugyanannyi ideig tartott, mint amikor RDF-et csináltunk 
+objektumból. Ez itt is tovább tart konverziónként, csak úgy, mint 1 példány esetében. 
+
+Valószínűleg az állhat a dolog mögött, hogy a beolvasás, majd megfelelően visszaalakítás kevésbé univerzűális művelet, mivel egy RDF 
+hármas az mindig egy RDF hármas, maximum egy objektumhoz több ilyen tartozik, de egy objektum összetevődhet tetszőlegesen 
+sok RDF hármasból, és ezeket nem mindegy, hogy hogyan kell kombinálni az objektum visszaállításához.
+
+### 1 000 000 Person objektum létrehozása RDF-ből
+
+![](img/performance/perf7.png)
+
+Itt a három teszt egymáshoz viszonyított nagyságrendjei stimmelnek, ez még inkább megerősít minket abban, hogy az 
+előző teszt kiugró első esete nem mérvadó. Érdekes azonban, hogy az inverz műveletekhez képest itt is ugyanaz a nagyságrend érvényesül. 
+Ez azt bizonyíthatja, hogy a fordító itt is tud optimalizálni. 
+
+## Tesztek javítás után
+
+A tesztek eredeti kódja a következő volt: 
+
+```java
+@Test
+public void performanceTestRdfToBeansMillions(){
+    ArrayList<Long> times = new ArrayList<>();
+
+    Person p = new Person("Peter");
+
+    Model model = RDFMapper.create().writeValue(p);
+
+    int randomDestrutor = 0;
+    Random rand = new Random();
+
+    for(int j = 0; j < 3; ++j) {
+        long start = System.nanoTime();
+
+        for(int i = 0; i < 1000000; ++i) {
+            if(rand.nextInt(2) == 1)
+                randomDestrutor += 1;
+
+            Person temp = RDFMapper.create().readValue(model, Person.class);
+        }
+
+        long finish = System.nanoTime();
+        times.add(finish - start);
+    }
+
+    System.out.print("Elapsed time creating 1 000 000 Beans from RDF: ");
+    long sum = 0;
+    for (Long time : times) {
+        sum += time;
+        System.out.print(time + "ns ");
+    }
+
+    System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
+}
+```
+
+Az elégazásos módszer itt is segíthet, hogy a teszt pontosabb legyen kevesebb optimalizációval. 
+
+#### Módosítások összesen
+- asd
+- asd
+- asd
+
+# Összegzés
+
+Nagyvonalakban azt láthatjuk, hogy RDF-ből visszaalakítani kényesebb probléma, mint a fordítottjét megcsinálni. Emiatt 
+ ezek a műveletek tovább is tartanak.
+
+A kódon egetrengető sebesség-optimalizációt nem tudtunk elérni, mivel nagyon sok befolyásoló tényező van, kezdve a futtatókörnyezet 
+specifikumától egészen a használt Java verzióig, de a felesleges, vagy esetleg nehezebben optimalizálható részeken 
+könnyíteni tudtunk, ezzel javítva az általános teljesítményen, és a kód átláthatóságán.
