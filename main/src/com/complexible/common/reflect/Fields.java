@@ -46,3 +46,4 @@ public final class Fields {
 		return theInput -> theInput.getAnnotation(theAnnotation) != null;
 	}
 }
+

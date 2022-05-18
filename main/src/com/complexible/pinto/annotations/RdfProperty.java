@@ -64,3 +64,4 @@ public @interface RdfProperty {
 	 */
 	public String datatype() default "";
 }
+

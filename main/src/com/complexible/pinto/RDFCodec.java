@@ -52,3 +52,4 @@ public interface RDFCodec<T> {
 	 */
 	public T readValue(final Model theGraph, final Value theObj);
 }
+
