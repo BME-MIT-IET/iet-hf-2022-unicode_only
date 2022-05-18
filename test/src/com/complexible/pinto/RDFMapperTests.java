@@ -45,17 +45,7 @@ import org.openrdf.model.vocabulary.XMLSchema;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TimeZone;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -777,6 +767,103 @@ public class RDFMapperTests {
 		                                 .build()
 		                                 .readValue(aGraph, ClassWithMap.class,
 		                                                    SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:06f95e70fea33fcd99e6804b02f96cc9")));
+	}
+
+	@Test
+	public void performanceTestOne(){
+		ArrayList<Long> times = new ArrayList<>();
+
+		Person p = new Person("Peter");
+
+		for(int j = 0; j < 3; ++j){
+			long start = System.nanoTime();
+
+			Model m = RDFMapper.create().writeValue(p);
+
+			long finish = System.nanoTime();
+			times.add(finish - start);
+		}
+
+		System.out.print("Elapsed time creating 1 RDF from Beans: ");
+		long sum = 0;
+		for (Long time : times) {
+			sum += time;
+			System.out.print(time + "ns ");
+		}
+
+		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
+
+	}
+
+	@Test
+	public void performanceTestTwo(){
+		ArrayList<Long> times = new ArrayList<>();
+
+		Person p = new Person("Peter");
+
+		for(int j = 0; j < 3; ++j){
+			long start = System.nanoTime();
+
+			for(int i = 0; i < 1000; ++i) {
+				Model m = RDFMapper.create().writeValue(p);
+				while(m != null)
+					m = RDFMapper.create().writeValue(p);
+			}
+			long finish = System.nanoTime();
+			times.add(finish - start);
+		}
+
+		System.out.print("Elapsed time creating 1 000 RDFs from Beans: ");
+		long sum = 0;
+		for (Long time : times) {
+			sum += time;
+			System.out.print(time + "ns ");
+		}
+
+		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
+	}
+
+	@Test
+	public void performanceTestThree(){
+		ArrayList<Long> times = new ArrayList<>();
+
+		Person p = new Person("Peter");
+
+		for(int j = 0; j < 3; ++j){
+			long start = System.nanoTime();
+
+			for(int i = 0; i < 1000000; ++i) {
+				Model m = RDFMapper.create().writeValue(p);
+				while(m != null)
+					m = RDFMapper.create().writeValue(p);
+			}
+			long finish = System.nanoTime();
+			times.add(finish - start);
+		}
+
+		System.out.print("Elapsed time creating 1 000 000 RDFs from Beans: ");
+		long sum = 0;
+		for (Long time : times) {
+			sum += time;
+			System.out.print(time + "ns ");
+		}
+
+		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
+	}
+
+	@Test
+	public void performanceTestFour(){
+		//TODO create 1 Beans from RDF and measure time
+	}
+
+	@Test
+	public void performanceTestFive(){
+		//TODO create 1 000 Beans from RDF and measure time
+	}
+
+	@Test
+	public void performanceTestSix(){
+		//TODO create 1 000 000 Beans from RDF and measure time
 	}
 
 	public static final class Files3 {
@@ -1548,6 +1635,8 @@ public class RDFMapperTests {
 			}
 		}
 	}
-	
+
+
+
 }
 
