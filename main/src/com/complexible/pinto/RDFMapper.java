@@ -179,30 +179,29 @@ public final class RDFMapper {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T readValue(final Model theGraph, final Class<T> theClass) {
+		if(theGraph.subjects().size() > 1)
+			throw new RDFMappingException("Multiple subjects found, need to specify the identifier of the object to create.");
+
 		RDFCodec<T> aCodec = (RDFCodec<T>) mCodecs.get(theClass);
 
-		final Collection<Resource> aSubjects = theGraph.subjects();
-
-		if (aSubjects.size() > 1) {
-			throw new RDFMappingException("Multiple subjects found, need to specify the identifier of the object to create.");
-		}
-		else if (aSubjects.isEmpty()) {
+		if (theGraph.subjects().isEmpty())
 			return aCodec == null ? newInstance(theClass)
-			                      : aCodec.readValue(theGraph, SimpleValueFactory.getInstance().createBNode());
-		}
+					: aCodec.readValue(theGraph, SimpleValueFactory.getInstance().createBNode());
 
-		final Resource aSubj = aSubjects.iterator().next();
-
-		if (aCodec != null) {
-			return aCodec.readValue(theGraph, aSubj);
-		}
-		else {
-			return readValue(theGraph, theClass, aSubj);
-		}
+		return aCodec != null ? aCodec.readValue(theGraph, theGraph.subjects().iterator().next())
+				: readValue(theGraph, theClass, theGraph.subjects().iterator().next());
 	}
 
 	private static boolean isIgnored(final PropertyDescriptor thePropertyDescriptor) {
 		// we'll ignore getClass() on the bean
+		/*if (thePropertyDescriptor.getName().equals("class")
+		    && thePropertyDescriptor.getReadMethod().getDeclaringClass() == Object.class
+		    && thePropertyDescriptor.getReadMethod().getReturnType().equals(Class.class)) {
+			return  true;
+		}
+
+		return false;*/
+
 		return thePropertyDescriptor.getName().equals("class")
 				&& thePropertyDescriptor.getReadMethod().getDeclaringClass() == Object.class
 				&& thePropertyDescriptor.getReadMethod().getReturnType().equals(Class.class);
@@ -397,14 +396,15 @@ public final class RDFMapper {
 		// before we do anything, do we have a custom codec for this?
 		RDFCodec<T> aCodec = (RDFCodec<T>)mCodecs.get(theValue.getClass());
 		if (aCodec != null) {
-			final Value aResult = aCodec.writeValue(theValue);
+			return (ResourceBuilder) aCodec.writeValue(theValue);
+			/*final Value aResult = aCodec.writeValue(theValue);
 
 			if (aResult instanceof ResourceBuilder) {
 				return (ResourceBuilder) aResult;
 			}
 			else {
 				return new ResourceBuilder(id(theValue)).addType(getType(theValue)).addProperty(VALUE, aResult);
-			}
+			}*/
 		}
 
 		final Resource aId = id(theValue);

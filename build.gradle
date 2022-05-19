@@ -49,9 +49,16 @@ repositories {
 }
 
 dependencies {
+	implementation 'org.junit.jupiter:junit-jupiter:5.7.0'
 	compile (group: "com.google.guava", name: "guava", version: "18.0") {
 		exclude group: "com.google.code.findbugs"
 	}
+	testCompile 'io.cucumber:cucumber-java8:7.0.0'
+	testCompile 'io.cucumber:cucumber-junit:7.0.0'
+	testImplementation 'junit:junit:4.13'
+	testImplementation 'io.cucumber:cucumber-java:6.6.1'
+	testImplementation 'io.cucumber:cucumber-junit:6.6.1'
+	testImplementation 'io.rest-assured:rest-assured:4.3.3'
 
 	compile "commons-beanutils:commons-beanutils:1.9.2"
 	compile "commons-codec:commons-codec:1.10"
@@ -81,4 +88,21 @@ sonarqube {
 
 tasks.withType(Test) {
 	systemProperties = System.getProperties()
+}
+
+configurations {
+	cucumberRuntime {
+		extendsFrom testImplementation
+	}
+}
+
+task cucumber() {
+	dependsOn assemble, testClasses
+	doLast {
+		javaexec {
+			main = "io.cucumber.core.cli.Main"
+			classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+			args = ['--plugin', 'pretty','--glue', 'cucumber', 'test/resources']
+		}
+	}
 }

@@ -55,3 +55,7 @@ Ha megvan ez az RDF akkor vissza lehet konvertálni a Person objektummá:
 ```java
 final Person aPerson RDFMapper.create().readValue(aGraph, Person.class)
 ```
+
+
+
+
