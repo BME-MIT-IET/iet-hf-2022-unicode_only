@@ -125,16 +125,26 @@ public final class RDFMapper {
 		PropertyUtils.addBeanIntrospector(new FluentPropertyBeanIntrospector());
 	}
 
-	private RDFMapper(final Map<IRI, Class<?>> theMappings,
-	                  final Map<Class<?>, Function<Object, Resource>> theIdFunctions,
-	                  final ValueFactory theValueFactory,
-	                  final Map<String, String> theNamespaces,
-	                  final CollectionFactory theFactory, final MapFactory theMapFactory,
-	                  final Map<Class<?>, RDFCodec<?>> theCodecs, final Options theMappingOptions) {
+	static class Factories{
+		private ValueFactory v;
+		private CollectionFactory c;
+		private MapFactory m;
 
-		mCollectionFactory = theFactory;
-		mMapFactory = theMapFactory;
-		mValueFactory = theValueFactory;
+		Factories(ValueFactory vf, CollectionFactory cf, MapFactory mf){
+			v = vf;
+			c = cf;
+			m = mf;
+		}
+	}
+
+	private RDFMapper(final Map<IRI, Class<?>> theMappings,
+					  final Map<Class<?>, Function<Object, Resource>> theIdFunctions,
+					  final Map<String, String> theNamespaces,
+					  final Map<Class<?>, RDFCodec<?>> theCodecs, final Options theMappingOptions, final Factories fact) {
+
+		mCollectionFactory = fact.c;
+		mMapFactory = fact.m;
+		mValueFactory = fact.v;
 		mNamespaces = theNamespaces;
 		mCodecs = theCodecs;
 		mMappingOptions = theMappingOptions;
@@ -1119,8 +1129,7 @@ public final class RDFMapper {
 		 * @return  the new mapper
 		 */
 		public RDFMapper build() {
-			return new RDFMapper(mMappings, mIdFunctions, mValueFactory, mNamespaces, mCollectionFactory,
-			                     mMapFactory, mCodecs, mOptions);
+			return new RDFMapper(mMappings, mIdFunctions, mNamespaces, mCodecs, mOptions, new Factories(mValueFactory, mCollectionFactory, mMapFactory));
 		}
 	}
 
