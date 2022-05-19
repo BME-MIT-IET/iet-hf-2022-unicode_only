@@ -139,8 +139,10 @@ public final class RDFMapper {
 	                  final Map<Class<?>, Function<Object, Resource>> theIdFunctions,
 	                  final ValueFactory theValueFactory,
 	                  final Map<String, String> theNamespaces,
-	                  final CollectionFactory theFactory, final MapFactory theMapFactory,
-	                  final Map<Class<?>, RDFCodec<?>> theCodecs, final Options theMappingOptions) {
+	                  final CollectionFactory theFactory,
+					  final MapFactory theMapFactory,
+	                  final Map<Class<?>, RDFCodec<?>> theCodecs,
+					  final Options theMappingOptions) {
 
 		mCollectionFactory = theFactory;
 		mMapFactory = theMapFactory;
@@ -179,37 +181,32 @@ public final class RDFMapper {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> T readValue(final Model theGraph, final Class<T> theClass) {
+		if(theGraph.subjects().size() > 1)
+			throw new RDFMappingException("Multiple subjects found, need to specify the identifier of the object to create.");
+
 		RDFCodec<T> aCodec = (RDFCodec<T>) mCodecs.get(theClass);
 
-		final Collection<Resource> aSubjects = theGraph.subjects();
-
-		if (aSubjects.size() > 1) {
-			throw new RDFMappingException("Multiple subjects found, need to specify the identifier of the object to create.");
-		}
-		else if (aSubjects.isEmpty()) {
+		if (theGraph.subjects().isEmpty())
 			return aCodec == null ? newInstance(theClass)
-			                      : aCodec.readValue(theGraph, SimpleValueFactory.getInstance().createBNode());
-		}
+					: aCodec.readValue(theGraph, SimpleValueFactory.getInstance().createBNode());
 
-		final Resource aSubj = aSubjects.iterator().next();
-
-		if (aCodec != null) {
-			return aCodec.readValue(theGraph, aSubj);
-		}
-		else {
-			return readValue(theGraph, theClass, aSubj);
-		}
+		return aCodec != null ? aCodec.readValue(theGraph, theGraph.subjects().iterator().next())
+				: readValue(theGraph, theClass, theGraph.subjects().iterator().next());
 	}
 
 	private static boolean isIgnored(final PropertyDescriptor thePropertyDescriptor) {
 		// we'll ignore getClass() on the bean
-		if (thePropertyDescriptor.getName().equals("class")
+		/*if (thePropertyDescriptor.getName().equals("class")
 		    && thePropertyDescriptor.getReadMethod().getDeclaringClass() == Object.class
 		    && thePropertyDescriptor.getReadMethod().getReturnType().equals(Class.class)) {
 			return  true;
 		}
 
-		return false;
+		return false;*/
+
+		return thePropertyDescriptor.getName().equals("class")
+				&& thePropertyDescriptor.getReadMethod().getDeclaringClass() == Object.class
+				&& thePropertyDescriptor.getReadMethod().getReturnType().equals(Class.class);
 	}
 
 	/**
@@ -401,14 +398,15 @@ public final class RDFMapper {
 		// before we do anything, do we have a custom codec for this?
 		RDFCodec aCodec = mCodecs.get(theValue.getClass());
 		if (aCodec != null) {
-			final Value aResult = aCodec.writeValue(theValue);
+			return (ResourceBuilder) aCodec.writeValue(theValue);
+			/*final Value aResult = aCodec.writeValue(theValue);
 
 			if (aResult instanceof ResourceBuilder) {
 				return (ResourceBuilder) aResult;
 			}
 			else {
 				return new ResourceBuilder(id(theValue)).addType(getType(theValue)).addProperty(VALUE, aResult);
-			}
+			}*/
 		}
 
 		final Resource aId = id(theValue);
@@ -423,20 +421,17 @@ public final class RDFMapper {
 			for (Map.Entry<String, Object> aEntry : PropertyUtils.describe(theValue).entrySet()) {
 				final PropertyDescriptor aDescriptor = PropertyUtils.getPropertyDescriptor(theValue, aEntry.getKey());
 
-				if (isIgnored(aDescriptor)) {
-					continue;
-				}
+				if(!isIgnored(aDescriptor)){
+					final IRI aProperty = getProperty(aDescriptor);
 
-				final IRI aProperty = getProperty(aDescriptor);
+					if(aProperty != null){
+						final Object aObj = aEntry.getValue();
 
-				if (aProperty == null) {
-					continue;
-				}
+						if (aObj != null) {
+							setValue(aGraph, aBuilder, aDescriptor, aProperty, aObj);
+						}
+					}
 
-				final Object aObj = aEntry.getValue();
-
-				if (aObj != null) {
-					setValue(aGraph, aBuilder, aDescriptor, aProperty, aObj);
 				}
 			}
 
