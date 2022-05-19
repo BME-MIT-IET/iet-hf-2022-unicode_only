@@ -409,20 +409,17 @@ public final class RDFMapper {
 			for (Map.Entry<String, Object> aEntry : PropertyUtils.describe(theValue).entrySet()) {
 				final PropertyDescriptor aDescriptor = PropertyUtils.getPropertyDescriptor(theValue, aEntry.getKey());
 
-				if (isIgnored(aDescriptor)) {
-					continue;
-				} else{
+				if(!isIgnored(aDescriptor)){
 					final IRI aProperty = getProperty(aDescriptor);
 
-					if (aProperty == null) {
-						continue;
+					if(aProperty != null){
+						final Object aObj = aEntry.getValue();
+
+						if (aObj != null) {
+							setValue(aGraph, aBuilder, aDescriptor, aProperty, aObj);
+						}
 					}
 
-					final Object aObj = aEntry.getValue();
-
-					if (aObj != null) {
-						setValue(aGraph, aBuilder, aDescriptor, aProperty, aObj);
-					}
 				}
 			}
 
