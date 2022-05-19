@@ -741,7 +741,194 @@ public class RDFMapperTests {
 		                                                    SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:06f95e70fea33fcd99e6804b02f96cc9")));
 	}
 
-	//Újak
+	@Test
+	public void performanceTestBeansToRdfOne(){
+		ArrayList<Long> times = new ArrayList<>();
+
+		Person p = new Person("Peter");
+
+		for(int j = 0; j < 3; ++j){
+			long start = System.nanoTime();
+
+			Model m = RDFMapper.create().writeValue(p);
+
+			long finish = System.nanoTime();
+			times.add(finish - start);
+		}
+
+		System.out.print("Elapsed time creating 1 RDF from Beans: ");
+		long sum = 0;
+		for (Long time : times) {
+			sum += time;
+			System.out.print(time + "ns ");
+		}
+
+		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
+
+	}
+
+	@Test
+	public void performanceTestBeansToRdfThousand(){
+		ArrayList<Long> times = new ArrayList<>();
+
+		Person p = new Person("Peter");
+
+		int randomDestrutor = 0;
+		Random rand = new Random();
+
+		for(int j = 0; j < 3; ++j){
+			long start = System.nanoTime();
+
+			for(int i = 0; i < 1000; ++i) {
+				if(rand.nextInt(2) == 1)
+					randomDestrutor += 1;
+
+				Model m = RDFMapper.create().writeValue(p);
+			}
+			long finish = System.nanoTime();
+			times.add(finish - start);
+		}
+
+		System.out.print("Elapsed time creating 1 000 RDFs from Beans: ");
+		long sum = 0;
+		for (Long time : times) {
+			sum += time;
+			System.out.print(time + "ns ");
+		}
+
+		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
+	}
+
+	@Test
+	public void performanceTestBeansToRdfMillion(){
+		ArrayList<Long> times = new ArrayList<>();
+
+		Person p = new Person("Peter");
+
+		int randomDestrutor = 0;
+		Random rand = new Random();
+
+		for(int j = 0; j < 3; ++j){
+			long start = System.nanoTime();
+
+			for(int i = 0; i < 1000000; ++i) {
+				if(rand.nextInt(2) == 1)
+					randomDestrutor += 1;
+
+				Model m = RDFMapper.create().writeValue(p);
+			}
+			long finish = System.nanoTime();
+			times.add(finish - start);
+		}
+
+		System.out.print("Elapsed time creating 1 000 000 RDFs from Beans: ");
+		long sum = 0;
+		for (Long time : times) {
+			sum += time;
+			System.out.print(time + "ns ");
+		}
+
+		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
+	}
+
+	@Test
+	public void performanceTestRdfToBeansOne(){
+		ArrayList<Long> times = new ArrayList<>();
+
+		Person p = new Person("Peter");
+
+		Model model = RDFMapper.create().writeValue(p);
+
+		for(int j = 0; j < 3; ++j) {
+			long start = System.nanoTime();
+
+			Person temp = RDFMapper.create().readValue(model, Person.class);
+
+			long finish = System.nanoTime();
+			times.add(finish - start);
+		}
+
+		System.out.print("Elapsed time creating 1 Bean from RDF: ");
+		long sum = 0;
+		for (Long time : times) {
+			sum += time;
+			System.out.print(time + "ns ");
+		}
+
+		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
+	}
+
+	@Test
+	public void performanceTestRdfToBeansThousand(){
+		ArrayList<Long> times = new ArrayList<>();
+
+		Person p = new Person("Peter");
+
+		Model model = RDFMapper.create().writeValue(p);
+
+		int randomDestrutor = 0;
+		Random rand = new Random();
+
+		for(int j = 0; j < 3; ++j) {
+			long start = System.nanoTime();
+
+			for(int i = 0; i < 1000; ++i) {
+				if(rand.nextInt(2) == 1)
+					randomDestrutor += 1;
+
+				Person temp = RDFMapper.create().readValue(model, Person.class);
+			}
+
+			long finish = System.nanoTime();
+			times.add(finish - start);
+		}
+
+		System.out.print("Elapsed time creating 1 000 Beans from RDF: ");
+		long sum = 0;
+		for (Long time : times) {
+			sum += time;
+			System.out.print(time + "ns ");
+		}
+
+		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
+	}
+
+	@Test
+	public void performanceTestRdfToBeansMillions(){
+		ArrayList<Long> times = new ArrayList<>();
+
+		Person p = new Person("Peter");
+
+		Model model = RDFMapper.create().writeValue(p);
+
+		int randomDestrutor = 0;
+		Random rand = new Random();
+
+		for(int j = 0; j < 3; ++j) {
+			long start = System.nanoTime();
+
+			for(int i = 0; i < 1000000; ++i) {
+				if(rand.nextInt(2) == 1)
+					randomDestrutor += 1;
+
+				Person temp = RDFMapper.create().readValue(model, Person.class);
+			}
+
+			long finish = System.nanoTime();
+			times.add(finish - start);
+		}
+
+		System.out.print("Elapsed time creating 1 000 000 Beans from RDF: ");
+		long sum = 0;
+		for (Long time : times) {
+			sum += time;
+			System.out.print(time + "ns ");
+		}
+
+		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
+	}
+  
+  //Újak
 
 	//TODO
 	@Test
@@ -962,7 +1149,6 @@ public class RDFMapperTests {
 				return false;
 			}
 		}
-	}
 
 	public static final class Files3 {
 		public static File classPath(final String thePath) {
@@ -1766,6 +1952,8 @@ public class RDFMapperTests {
 			}
 		}
 	}
-	
+
+
+
 }
 
