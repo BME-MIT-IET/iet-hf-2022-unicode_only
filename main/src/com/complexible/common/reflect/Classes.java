@@ -80,7 +80,7 @@ public final class Classes {
 		// rather than calling theClass.getConstructor() directly and incurring the overhead of creating
 		// the NoSuchMethodException if the constructor is not present, we'll just scan through the constructors
 		// there's only likely to be a few so hopefully this is a faster check.  TBD
-		for (Constructor aConstructor : theClass.getConstructors()) {
+		for (Constructor<?> aConstructor : theClass.getConstructors()) {
 			if (aConstructor.getParameterTypes().length == 0) {
 				return true;
 			}

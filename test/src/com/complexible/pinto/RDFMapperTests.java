@@ -423,7 +423,7 @@ public class RDFMapperTests {
 
 		Model aGraph = RDFMapper.create().writeValue(aPerson);
 
-		assertTrue(aPerson.id() != null);
+		assertNotNull(aPerson.id() );
 
 		assertEquals(1, aGraph.size());
 
