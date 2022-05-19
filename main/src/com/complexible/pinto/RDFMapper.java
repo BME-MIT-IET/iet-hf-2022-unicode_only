@@ -411,18 +411,18 @@ public final class RDFMapper {
 
 				if (isIgnored(aDescriptor)) {
 					continue;
-				}
+				} else{
+					final IRI aProperty = getProperty(aDescriptor);
 
-				final IRI aProperty = getProperty(aDescriptor);
+					if (aProperty == null) {
+						continue;
+					}
 
-				if (aProperty == null) {
-					continue;
-				}
+					final Object aObj = aEntry.getValue();
 
-				final Object aObj = aEntry.getValue();
-
-				if (aObj != null) {
-					setValue(aGraph, aBuilder, aDescriptor, aProperty, aObj);
+					if (aObj != null) {
+						setValue(aGraph, aBuilder, aDescriptor, aProperty, aObj);
+					}
 				}
 			}
 
@@ -479,11 +479,11 @@ public final class RDFMapper {
 			}
 		}
 		else if (Map.class.isAssignableFrom(theObj.getClass())) {
-			Map<Class<?>, Class<?>> aMap = (Map) theObj;
+			Map<Class<?>, Class<?>> aMap = (Map<Class<?>, Class<?>>) theObj;
 
 			if (!aMap.isEmpty()) {
 				ResourceBuilder aRes = theGraph.instance();
-				for (Map.Entry aMapEntry : (Set<Map.Entry<Class<?>, Class<?>>>) aMap.entrySet()) {
+				for (Map.Entry<Class<?>, Class<?>> aMapEntry : aMap.entrySet()) {
 					ResourceBuilder aEntryRes = theGraph.instance();
 
 					setValue(theGraph, aEntryRes, null, KEY, aMapEntry.getKey());
