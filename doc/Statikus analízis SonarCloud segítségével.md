@@ -32,3 +32,34 @@ Ez a próbálkozás kudarccal zárult, ugyanis a Sonar Cloud csak akkor ellenőr
 ![](https://github.com/BME-MIT-IET/iet-hf-2022-unicode_only/blob/master/doc/img/first_sonar_run.png)
 
 A legfontosabb hibákat és javításaikat a [hibajegyen](https://github.com/BME-MIT-IET/iet-hf-2022-unicode_only/issues/8) lehetet követni
+
+---
+
+## SonarCloud hibák javítása
+
+Az eredeti projektben (master branch) található hibák a következők voltak a projekt elkezdésének idejében:
+[link](https://sonarcloud.io/project/issues?resolved=false&severities=MAJOR&pullRequest=7&id=BME-MIT-IET_iet-hf-2022-unicode_only)
+
+Ezeknek a hibáknak a lehető legnagyobb mértékű kijavítását is felvettük a feladatok közé.
+Különböző nehézségű és súlyosságú hibák voltak, melyre egy megközelítőleges időintervallumot és a hiba leírását kaptuk meg. 
+A code smellek többségét sikerül is az adott időn belül javítani, mellyel nagy mértékben 
+javítottuk a kód helyességét.
+
+A legtöbb code smell fajtája:
+- Constructor has 8 parameters, which is greater than 7 authorized.
+
+Itt a kód bonyolultsága miatt kellett egyszerűsíteni a konstruktort, melyet itt úgy oldottunk meg, hogy
+összevontunk összetartozó adatokat egy új struktúrában.
+
+- Provide the parametrized type for this generic.
+
+Ebben az errorban legtöbbször a <?> rész maradt le (unbounded wildcard), illetve ennek különböző esetei.
+
+- Replace this usage of "Long.class.isInstance()" with "instanceof Long"
+
+Itt konkrét megoldást kapunk magára a hibára, ezeket volt a legkönnyebb kijavítani.
+
+- Refactor this repetition that can lead to a stack overflow for large inputs.
+
+A regex kifejezés javítása volt még a feladat, mivel nagy input esetén stack overflow lehet.
+Itt a 'vagy'-ot kellett eltávolítani a kifejezésből.
