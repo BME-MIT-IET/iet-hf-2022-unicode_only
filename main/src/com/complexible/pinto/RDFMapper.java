@@ -966,7 +966,7 @@ public final class RDFMapper {
 	 * @version 1.0
 	 */
 	public static class Builder {
-		private static final Pattern PREFIX_REGEX = Pattern.compile("^([a-z]|[A-Z]|_){1}(\\w|-|\\.){0,20}$");
+		private static final Pattern PREFIX_REGEX = Pattern.compile("^[a-zA-Z_](\\w|-|\\.){0,20}$");
 
 		private final Map<IRI, Class<?>> mMappings = Maps.newHashMap();
 
