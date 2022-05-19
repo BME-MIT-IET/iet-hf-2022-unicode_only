@@ -34,31 +34,21 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.openrdf.model.Literal;
-import org.openrdf.model.Model;
-import org.openrdf.model.Resource;
-import org.openrdf.model.Statement;
+import org.openrdf.model.*;
 import org.openrdf.model.impl.SimpleValueFactory;
 import org.openrdf.model.util.Models;
 import org.openrdf.model.vocabulary.XMLSchema;
+import org.openrdf.rio.RDFFormat;
+import sun.reflect.generics.reflectiveObjects.WildcardTypeImpl;
+import sun.reflect.generics.tree.Wildcard;
 
-import java.io.File;
+import java.io.*;
+import java.lang.reflect.WildcardType;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TimeZone;
-import java.util.UUID;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * <p></p>
@@ -323,16 +313,6 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	@Ignore
-	public void testURIMapping() throws Exception {
-		// alternative to RdfsClass, verify that if you specify a type URI -> class mapping it is used
-		// test 1, that the rdf:type is included in a top level class
-		// test 2, that the type can be used to find the correct implementation for a property
-		//         eg:  Object getFoo() -> this will be populated by a individual w/ a type :Bar to the class Baz
-		//              so the mapping would specify :Bar <-> Baz
-	}
-
-	@Test
 	public void testUseRdfIdForIdentification() throws Exception {
 		// require ids so the default id generation cannot be used
 		RDFMapper aMapper = RDFMapper.builder()
@@ -355,6 +335,32 @@ public class RDFMapperTests {
 		assertEquals(aExpected,
 		             ((org.openrdf.model.URI) aGraph.iterator().next().getSubject()).getLocalName());
 	}
+
+	@Test(expected = UnidentifiableObjectException.class)
+	public void testUseRdfIdForIdentificationWithInvalidID() throws Exception {
+		// require ids so the default id generation cannot be used
+		RDFMapper aMapper = RDFMapper.builder()
+				.set(MappingOptions.REQUIRE_IDS, true)
+				.build();
+
+		BadCompany aCompany = new BadCompany();
+		aCompany.setName("Very bad company");
+		aCompany.setNumberOfEmployees(2);
+		aCompany.setWebsite("https://verybadcompany.co");
+
+		Model aGraph = aMapper.writeValue(aCompany);
+
+		assertTrue(!aGraph.isEmpty());
+
+		final String aExpected = Hashing.md5().newHasher()
+				.putString(aCompany.getName(), Charsets.UTF_8)
+				.putString(aCompany.getWebsite(), Charsets.UTF_8)
+				.hash().toString();
+
+		assertEquals(aExpected,
+				((org.openrdf.model.URI) aGraph.iterator().next().getSubject()).getLocalName());
+	}
+
 
 	@Test
 	public void testWriteTwice() throws Exception {
@@ -628,7 +634,6 @@ public class RDFMapperTests {
 		aObj.setValue(TestEnum.Foo);
 
 		final Model aGraph = RDFMapper.create().writeValue(aObj);
-
 		assertTrue(aGraph.isEmpty());
 	}
 
@@ -659,14 +664,10 @@ public class RDFMapperTests {
 		assertEquals(aExpected, aResult);
 	}
 
-	@Test
-	@Ignore
-	public void testReadEnumSet() throws Exception {
-	}
 
-	@Test
 	@Ignore
-	public void testWriteEnumSet() throws Exception {
+	@Test
+	public void testReadEnumSet() throws Exception {
 	}
 
 	@Test
@@ -677,6 +678,7 @@ public class RDFMapperTests {
 	@Test
 	@Ignore
 	public void testWriteWithLangTag() throws Exception {
+
 	}
 
 	@Test
@@ -687,11 +689,6 @@ public class RDFMapperTests {
 	@Test(expected = RDFMappingException.class)
 	@Ignore
 	public void testMultipleValuesForNonIterableProperty() throws Exception {
-	}
-
-	@Test(expected = RDFMappingException.class)
-	@Ignore
-	public void testCharBeanTypeWithLongString() throws Exception {
 	}
 
 	@Test(expected = RDFMappingException.class)
@@ -777,6 +774,220 @@ public class RDFMapperTests {
 		                                 .build()
 		                                 .readValue(aGraph, ClassWithMap.class,
 		                                                    SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:06f95e70fea33fcd99e6804b02f96cc9")));
+	}
+
+	//Újak
+
+	@Test
+	public void testWriteEnumSetValidIRI() {
+		ClassWithEnumSet cwes = new ClassWithEnumSet();
+
+		EnumSet<TestEnum> set = EnumSet.noneOf(TestEnum.class);
+		set.add(TestEnum.Bar);
+		cwes.setEnums(set);
+		Model m = RDFMapper.create().writeValue(cwes);
+		assertFalse(m.isEmpty());
+	}
+
+	@Test
+	public void testWriteEnumSetInvalidIRI() {
+
+		ClassWithEnumSet cwes = new ClassWithEnumSet();
+
+		EnumSet<TestEnum> set = EnumSet.noneOf(TestEnum.class);
+		set.add(TestEnum.Foo);
+
+		cwes.setEnums(set);
+		Model m = RDFMapper.create().writeValue(cwes);
+	}
+
+	@Test
+	public void testWriteEnumSetNoIRI() {
+		ClassWithEnumSet cwes = new ClassWithEnumSet();
+
+		EnumSet<TestEnum> set = EnumSet.noneOf(TestEnum.class);
+		set.add(TestEnum.Baz);
+		cwes.setEnums(set);
+		Model m = RDFMapper.create().writeValue(cwes);
+		assertFalse(m.isEmpty());
+	}
+
+	@Test
+	public void testWriteEnumSetMixed() {
+		ClassWithEnumSet cwes = new ClassWithEnumSet();
+
+		EnumSet<TestEnum> set = EnumSet.noneOf(TestEnum.class);
+		set.add(TestEnum.Bar);
+		set.add(TestEnum.Baz);
+		set.add(TestEnum.Foo);
+
+		cwes.setEnums(set);
+		Model m = RDFMapper.create().writeValue(cwes);
+		assertFalse(m.isEmpty());
+	}
+
+	@Test
+	public void testMultipleSubjectsWithIdProvided() throws Exception {
+		ClassWithObjectList cwls = RDFMapper.create().readValue(ModelIO.read(Files3.classPath("/data/object_lists.nt").toPath()), ClassWithObjectList.class,
+				SimpleValueFactory.getInstance().createIRI("urn:someIdentifier"));
+		assertFalse(cwls == null);
+	}
+
+	public String buildLongString() {
+		StringBuilder longStringBuilder = new StringBuilder();
+		for(int i=0; i<1000000; ++i){
+			longStringBuilder.append("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+		}
+		return longStringBuilder.toString();
+	}
+
+	@Test(expected = RDFMappingException.class)
+	//@Ignore
+	public void testCharBeanTypeWithLongString() throws Exception {
+
+		ClassWithPrimitives cwp = new ClassWithPrimitives();
+		cwp.id(SimpleValueFactory.getInstance().createIRI("urn:testCharBeanTypeWithLongString"));
+		cwp.setString(buildLongString());
+		final Model model = RDFMapper.create().writeValue(cwp);
+
+		ClassWithPrimitives des = RDFMapper.create().readValue(model, ClassWithPrimitives.class,
+				SimpleValueFactory.getInstance().createIRI("urn:testCharBeanTypeWithLongString"));
+
+		assertTrue(cwp.equals(des));
+
+	}
+
+	@Test
+	public void testLongUri() throws Exception {
+		ClassWithPrimitives cwp = new ClassWithPrimitives();
+		cwp.id(SimpleValueFactory.getInstance().createIRI("urn:"+buildLongString()));
+		final Model md = RDFMapper.create().writeValue(cwp);
+	}
+
+	@Test
+	public void testReadIdentical() {
+		ClassWithObjectList aObj = new ClassWithObjectList();
+
+		aObj.setCollection(Sets.newLinkedHashSet(Lists.newArrayList(new Person("Earl Weaver"), new Person("Brooks Robinson"))));
+		aObj.id(SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:4f372f7bfb03f7b80be8777603d3b1ed"));
+
+		Model aGraph = RDFMapper.create().writeValue(aObj);
+
+		ClassWithObjectList deserialized = RDFMapper.create().readValue(aGraph, ClassWithObjectList.class,
+				SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:4f372f7bfb03f7b80be8777603d3b1ed"));
+
+		assertTrue(aObj.equals(deserialized));
+		assertTrue(deserialized.equals(aObj));
+
+	}
+
+	@Test(expected = RDFMappingException.class)
+	public void testWriteMapWithInvalidURI() throws Exception {
+
+		BadCompany bc1 = new BadCompany();
+		bc1.setName("Bad company");
+		bc1.setWebsite("https://foo.bar");
+		bc1.setNumberOfEmployees(3);
+
+		BadCompany bc2 = new BadCompany();
+		bc1.setName("Worse company");
+		bc1.setWebsite("https://foo.bar.co.uk");
+		bc1.setNumberOfEmployees(4);
+
+		Map<Object, Object> x = new HashMap<Object, Object>();
+		x.put(1, bc1);
+		x.put(2, bc2);
+
+		ClassWithMap cwm = new ClassWithMap();
+		cwm.setMap(x);
+
+		Model md = RDFMapper.create().writeValue(cwm);
+		ClassWithMap des = RDFMapper.create().readValue(md, ClassWithMap.class);
+	}
+
+	@Test
+	public void testURIMapping() throws Exception {
+		// alternative to RdfsClass, verify that if you specify a type URI -> class mapping it is used
+		// test 1, that the rdf:type is included in a top level class
+
+		ClassWithRdfsClassAnnotation cls = new ClassWithRdfsClassAnnotation();
+		cls.someValue = "aasdasd";
+		PropertyClass pc = new PropertyClass();
+		pc.someValue = 2.3f;
+		cls.instanceOfPropClass = pc;
+
+		final Model modelOfCompositeObject = RDFMapper.create().writeValue(cls);
+		ClassWithRdfsClassAnnotation deserialized = RDFMapper.create().readValue(modelOfCompositeObject, ClassWithRdfsClassAnnotation.class);
+
+		assert(deserialized instanceof ClassWithRdfsClassAnnotation);
+	}
+
+	@Test
+	public void testURIMapping2() throws Exception {
+
+		// test 2, that the type can be used to find the correct implementation for a property
+		//         eg:  Object getFoo() -> this will be populated by a individual w/ a type :Bar to the class Baz
+		//         so the mapping would specify :Bar <-> Baz
+		ClassWithRdfsClassAnnotation cls = new ClassWithRdfsClassAnnotation();
+		cls.someValue = "some string";
+		PropertyClass pc = new PropertyClass();
+		pc.someValue = 2.3f;
+		cls.instanceOfPropClass = pc;
+
+		final Model modelOfCompositeObject = RDFMapper.create().writeValue(cls);
+		ClassWithRdfsClassAnnotation deserialized = RDFMapper.create().readValue(modelOfCompositeObject, ClassWithRdfsClassAnnotation.class);
+
+		assert(deserialized instanceof ClassWithRdfsClassAnnotation &&
+				deserialized.instanceOfPropClass instanceof PropertyClass);
+	}
+
+	@RdfsClass("foaf:PropertyClass")
+	public static class PropertyClass {
+		public float someValue;
+		public PropertyClass() { }
+		@Override
+		public int hashCode() {return Objects.hashCode(someValue); }
+		@Override
+		public boolean equals(final Object theObj) {
+			if (theObj == this) {
+				return true;
+			}
+			else if (theObj instanceof PropertyClass) {
+				return Objects.equals(someValue, ((PropertyClass) theObj).someValue);
+			}
+			else {
+				return false;
+			}
+		}
+		@Override
+		public String toString() {
+			return String.valueOf(someValue);
+		}
+	}
+
+	@RdfsClass("foaf:ClassWithRdfsClass")
+	public static class ClassWithRdfsClassAnnotation {
+		public String someValue;
+		public PropertyClass instanceOfPropClass;
+
+		public ClassWithRdfsClassAnnotation() {}
+		@Override
+		public int hashCode() {
+			return 0;
+		}
+		@Override
+		public boolean equals(final Object theObj) {
+			if (theObj == this) {
+				return true;
+			}
+			else if (theObj instanceof ClassWithRdfsClassAnnotation) {
+				return Objects.equals(someValue, ((ClassWithRdfsClassAnnotation) theObj).someValue)
+						&& Objects.equals(instanceOfPropClass, ((ClassWithRdfsClassAnnotation) theObj).instanceOfPropClass);
+			}
+			else {
+				return false;
+			}
+		}
 	}
 
 	public static final class Files3 {
@@ -981,7 +1192,20 @@ public class RDFMapperTests {
 		}
 	}
 
-	public static class ClassWithEnumSet {
+	public static class ClassWithEnumSet /*implements Identifiable*/ {
+
+		/*private Identifiable mIdentifiable = new IdentifiableImpl();
+
+		@Override
+		public Resource id() {
+			return mIdentifiable.id();
+		}
+
+		@Override
+		public void id(final Resource theResource) {
+			mIdentifiable.id(theResource);
+		}*/
+
 		private EnumSet<TestEnum> mEnums = EnumSet.noneOf(TestEnum.class);
 
 		public EnumSet<TestEnum> getEnums() {
@@ -1171,6 +1395,26 @@ public class RDFMapperTests {
 		       || (theCollection != null && theOther != null
 		           && theCollection.getClass() == theOther.getClass()
 		           && Sets.newHashSet(theCollection).equals(Sets.newHashSet(theOther)));
+	}
+
+	@Test
+	public void checkCWOL() throws Exception {
+
+		ClassWithObjectList cw = new ClassWithObjectList();
+		cw.id(SimpleValueFactory.getInstance().createIRI("urn:ClassWithObjectList"));
+
+		final Model md = RDFMapper.create().writeValue(cw);
+		ClassWithObjectList des = RDFMapper.create().readValue(md, ClassWithObjectList.class);
+
+		Person p = new Person();
+		p.id(SimpleValueFactory.getInstance().createIRI("urn:Person"));
+		List<Person> people = new ArrayList<Person>();
+		people.add(p);
+		des.setList(people);
+		final Model modelWithPersonAdded = RDFMapper.create().writeValue(des);
+		ClassWithObjectList des2 = RDFMapper.create().readValue(modelWithPersonAdded, ClassWithObjectList.class);
+
+
 	}
 
 	public static class ClassWithObjectList implements Identifiable {
