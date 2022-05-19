@@ -73,8 +73,8 @@ public class RDFMapperTests {
 	@Test(expected = UnidentifiableObjectException.class)
 	public void testUnidentifiable() throws Exception {
 		RDFMapper aMapper = RDFMapper.builder()
-		                             .set(MappingOptions.REQUIRE_IDS, true)
-		                             .build();
+				.set(MappingOptions.REQUIRE_IDS, true)
+				.build();
 
 		aMapper.writeValue(new ClassWithPrimitives());
 	}
@@ -135,7 +135,7 @@ public class RDFMapperTests {
 		Model aGraph = ModelIO.read(new File(getClass().getResource("/data/mixed.nt").toURI()).toPath());
 
 		final ClassWithMixed aResult = RDFMapper.create().readValue(aGraph, ClassWithMixed.class,
-		                                                            SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:45ad04336c95c0be6bba90e4b663da4d"));
+				SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:45ad04336c95c0be6bba90e4b663da4d"));
 
 		assertEquals(aExpected, aResult);
 	}
@@ -175,7 +175,7 @@ public class RDFMapperTests {
 		Model aResult = RDFMapper.create().writeValue(aObj);
 
 		assertTrue(Models.isomorphic(ModelIO.read(Files3.classPath("/data/primitive_lists.nt").toPath()),
-		                            aResult));
+				aResult));
 	}
 
 	@Test
@@ -186,12 +186,12 @@ public class RDFMapperTests {
 		aObj.id(SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:9017b0ab9335e4d090290a0dffc81826"));
 
 		final Model aResult = RDFMapper.builder()
-		                               .set(MappingOptions.SERIALIZE_COLLECTIONS_AS_LISTS, true)
-		                               .build()
-		                               .writeValue(aObj);
+				.set(MappingOptions.SERIALIZE_COLLECTIONS_AS_LISTS, true)
+				.build()
+				.writeValue(aObj);
 
 		assertTrue(Models.isomorphic(ModelIO.read(Files3.classPath("/data/primitive_rdf_lists.nt").toPath()),
-		                            aResult));
+				aResult));
 	}
 
 	@Test
@@ -204,7 +204,7 @@ public class RDFMapperTests {
 		final Model aResult = RDFMapper.create().writeValue(aObj);
 
 		assertTrue(Models.isomorphic(ModelIO.read(Files3.classPath("/data/primitive_rdf_lists2.nt").toPath()),
-		                            aResult));
+				aResult));
 	}
 
 	@Test
@@ -229,9 +229,9 @@ public class RDFMapperTests {
 		aObj.id(SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:4f372f7bfb03f7b80be8777603d3b1ed"));
 
 		final Model aResult = RDFMapper.builder()
-		                               .set(MappingOptions.SERIALIZE_COLLECTIONS_AS_LISTS, true)
-		                               .build()
-		                               .writeValue(aObj);
+				.set(MappingOptions.SERIALIZE_COLLECTIONS_AS_LISTS, true)
+				.build()
+				.writeValue(aObj);
 
 		assertTrue(Models.isomorphic(ModelIO.read(Files3.classPath("/data/object_rdf_lists.nt").toPath()), aResult));
 	}
@@ -253,8 +253,8 @@ public class RDFMapperTests {
 		Model aGraph = ModelIO.read(Files3.classPath("/data/primitive_lists.nt").toPath());
 
 		final ClassWithPrimitiveLists aResult = RDFMapper.create().readValue(aGraph,
-		                                                                     ClassWithPrimitiveLists.class,
-		                                                                     SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:b7d283d3a73c7b8a870087942b9a43b1"));
+				ClassWithPrimitiveLists.class,
+				SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:b7d283d3a73c7b8a870087942b9a43b1"));
 
 		ClassWithPrimitiveLists aExpected = new ClassWithPrimitiveLists();
 
@@ -271,8 +271,8 @@ public class RDFMapperTests {
 		Model aGraph = ModelIO.read(Files3.classPath("/data/primitive_rdf_lists.nt").toPath());
 
 		final ClassWithPrimitiveLists aResult = RDFMapper.create().readValue(aGraph,
-		                                                                     ClassWithPrimitiveLists.class,
-		                                                                     SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:9017b0ab9335e4d090290a0dffc81826"));
+				ClassWithPrimitiveLists.class,
+				SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:9017b0ab9335e4d090290a0dffc81826"));
 
 		ClassWithPrimitiveLists aExpected = new ClassWithPrimitiveLists();
 
@@ -292,8 +292,8 @@ public class RDFMapperTests {
 		aExpected.setSortedSet(Sets.newTreeSet(Lists.newArrayList(new Person("Steve Pearce"), new Person("Zach Britton"))));
 
 		final ClassWithObjectList aResult = RDFMapper.create().readValue(aGraph,
-		                                                                 ClassWithObjectList.class,
-		                                                                 SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:881b2f11232944aeda9ba543e030dcfc"));
+				ClassWithObjectList.class,
+				SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:881b2f11232944aeda9ba543e030dcfc"));
 
 		assertEquals(aExpected, aResult);
 	}
@@ -307,8 +307,8 @@ public class RDFMapperTests {
 		aExpected.setCollection(Sets.newLinkedHashSet(Lists.newArrayList(new Person("Earl Weaver"), new Person("Brooks Robinson"))));
 
 		final ClassWithObjectList aResult = RDFMapper.create().readValue(aGraph,
-		                                                                 ClassWithObjectList.class,
-		                                                                 SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:4f372f7bfb03f7b80be8777603d3b1ed"));
+				ClassWithObjectList.class,
+				SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:4f372f7bfb03f7b80be8777603d3b1ed"));
 		assertEquals(aExpected, aResult);
 	}
 
@@ -316,8 +316,8 @@ public class RDFMapperTests {
 	public void testUseRdfIdForIdentification() throws Exception {
 		// require ids so the default id generation cannot be used
 		RDFMapper aMapper = RDFMapper.builder()
-		                             .set(MappingOptions.REQUIRE_IDS, true)
-		                             .build();
+				.set(MappingOptions.REQUIRE_IDS, true)
+				.build();
 
 		Company aCompany = new Company();
 		aCompany.setName("Clark & Parsia");
@@ -328,12 +328,12 @@ public class RDFMapperTests {
 		assertTrue(!aGraph.isEmpty());
 
 		final String aExpected = Hashing.md5().newHasher()
-		                                .putString(aCompany.getName(), Charsets.UTF_8)
-		                                .putString(aCompany.getWebsite(), Charsets.UTF_8)
-		                                .hash().toString();
+				.putString(aCompany.getName(), Charsets.UTF_8)
+				.putString(aCompany.getWebsite(), Charsets.UTF_8)
+				.hash().toString();
 
 		assertEquals(aExpected,
-		             ((org.openrdf.model.URI) aGraph.iterator().next().getSubject()).getLocalName());
+				((org.openrdf.model.URI) aGraph.iterator().next().getSubject()).getLocalName());
 	}
 
 	@Test(expected = UnidentifiableObjectException.class)
@@ -381,10 +381,10 @@ public class RDFMapperTests {
 		Model aGraph = ModelIO.read(Files3.classPath("/data/object_lists.nt").toPath());
 
 		final ClassWithObjectList aObj = RDFMapper.create().readValue(aGraph, ClassWithObjectList.class,
-		                                                              SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:881b2f11232944aeda9ba543e030dcfc"));
+				SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:881b2f11232944aeda9ba543e030dcfc"));
 
 		final ClassWithObjectList aObj2 = RDFMapper.create().readValue(aGraph, ClassWithObjectList.class,
-		                                                               SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:881b2f11232944aeda9ba543e030dcfc"));
+				SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:881b2f11232944aeda9ba543e030dcfc"));
 
 		assertEquals(aObj, aObj2);
 	}
@@ -435,8 +435,8 @@ public class RDFMapperTests {
 	@Test(expected = UnidentifiableObjectException.class)
 	public void testIdentifiableNoIdNoFallback() throws Exception {
 		RDFMapper.builder()
-		         .set(MappingOptions.REQUIRE_IDS, true)
-		         .build().writeValue(new ClassWithPrimitives());
+				.set(MappingOptions.REQUIRE_IDS, true)
+				.build().writeValue(new ClassWithPrimitives());
 	}
 
 	@Test
@@ -489,7 +489,6 @@ public class RDFMapperTests {
 	}
 
 
-
 	@Test
 	public void testUseSerializationAnnotations() throws Exception {
 		Company aCompany = new Company();
@@ -499,10 +498,10 @@ public class RDFMapperTests {
 		Model aGraph = RDFMapper.create().writeValue(aCompany);
 
 		assertTrue(Models.isomorphic(ModelIO.read(Files3.classPath("/data/company.nt").toPath()),
-		                            aGraph));
+				aGraph));
 	}
 
-	@Test(expected=RDFMappingException.class)
+	@Test(expected = RDFMappingException.class)
 	public void testCardinalityViolationFatal() throws Exception {
 		RDFMapper.create().readValue(ModelIO.read(Files3.classPath("/data/company-card.nt").toPath()), Company.class);
 	}
@@ -510,9 +509,9 @@ public class RDFMapperTests {
 	@Test
 	public void testCanIgnoreCardinalityViolation() throws Exception {
 		Company aCompany = RDFMapper.builder()
-		                            .set(MappingOptions.IGNORE_CARDINALITY_VIOLATIONS, true)
-		                            .build()
-		                            .readValue(ModelIO.read(Files3.classPath("/data/company-card.nt").toPath()), Company.class);
+				.set(MappingOptions.IGNORE_CARDINALITY_VIOLATIONS, true)
+				.build()
+				.readValue(ModelIO.read(Files3.classPath("/data/company-card.nt").toPath()), Company.class);
 
 		assertEquals("http://clarkparsia.com", aCompany.getWebsite());
 
@@ -527,7 +526,7 @@ public class RDFMapperTests {
 
 		Model aGraph = RDFMapper.create().writeValue(aCompany);
 		assertTrue(Models.isomorphic(ModelIO.read(Files3.classPath("/data/bad_company.nt").toPath()),
-		                            aGraph));
+				aGraph));
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -547,9 +546,9 @@ public class RDFMapperTests {
 		aCompany.setWebsite("http://clarkparsia.com");
 
 		RDFMapper.builder()
-		         .set(MappingOptions.IGNORE_INVALID_ANNOTATIONS, false)
-		         .build()
-		         .writeValue(aCompany);
+				.set(MappingOptions.IGNORE_INVALID_ANNOTATIONS, false)
+				.build()
+				.writeValue(aCompany);
 	}
 
 	@Test
@@ -560,9 +559,9 @@ public class RDFMapperTests {
 		aCompany.setNumberOfEmployees(10);
 
 		final Model aGraph = RDFMapper.builder()
-		                              .namespace("fo", FOAF.ontology().uri().toString())
-		                              .namespace("xs", XMLSchema.NAMESPACE)
-		                              .build().writeValue(aCompany);
+				.namespace("fo", FOAF.ontology().uri().toString())
+				.namespace("xs", XMLSchema.NAMESPACE)
+				.build().writeValue(aCompany);
 
 		assertTrue(Models.isomorphic(ModelIO.read(Files3.classPath("/data/company2.nt").toPath()), aGraph));
 	}
@@ -575,11 +574,11 @@ public class RDFMapperTests {
 		ClassWithObjectList aExpected = new ClassWithObjectList();
 
 		aExpected.setCollection(Sets.newLinkedHashSet(Lists.newArrayList(new Person("Earl Weaver"),
-		                                                                 new Person("Brooks Robinson"))));
+				new Person("Brooks Robinson"))));
 
 
 		final ClassWithObjectList aObj = RDFMapper.create().readValue(aGraph, ClassWithObjectList.class,
-		                                                              SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:4f372f7bfb03f7b80be8777603d3b1ed"));
+				SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:4f372f7bfb03f7b80be8777603d3b1ed"));
 		assertEquals(aExpected, aObj);
 	}
 
@@ -636,9 +635,9 @@ public class RDFMapperTests {
 		aObj.setValue(TestEnum.Foo);
 
 		RDFMapper.builder()
-		         .set(MappingOptions.IGNORE_INVALID_ANNOTATIONS, false)
-		         .build()
-		         .writeValue(aObj);
+				.set(MappingOptions.IGNORE_INVALID_ANNOTATIONS, false)
+				.build()
+				.writeValue(aObj);
 	}
 
 	@Test
@@ -680,12 +679,12 @@ public class RDFMapperTests {
 	public void testWriteWithCodec() throws Exception {
 
 		final Model aGraph = RDFMapper.builder()
-		                              .codec(UUID.class, UUIDCodec.Instance)
-		                              .build()
-		                              .writeValue(UUID.fromString("0110f311-964b-440d-b772-92c621c5d1e4"));
+				.codec(UUID.class, UUIDCodec.Instance)
+				.build()
+				.writeValue(UUID.fromString("0110f311-964b-440d-b772-92c621c5d1e4"));
 
 		assertTrue(Models.isomorphic(aGraph,
-		                            ModelIO.read(Files3.classPath("/data/uuid.nt").toPath())));
+				ModelIO.read(Files3.classPath("/data/uuid.nt").toPath())));
 	}
 
 	@Test
@@ -693,9 +692,9 @@ public class RDFMapperTests {
 		final Model aGraph = ModelIO.read(Files3.classPath("/data/uuid.nt").toPath());
 
 		final UUID aResult = RDFMapper.builder()
-				                              .codec(UUID.class, UUIDCodec.Instance)
-				                              .build()
-				                              .readValue(aGraph, UUID.class);
+				.codec(UUID.class, UUIDCodec.Instance)
+				.build()
+				.readValue(aGraph, UUID.class);
 
 		assertEquals(UUID.fromString("0110f311-964b-440d-b772-92c621c5d1e4"), aResult);
 	}
@@ -712,12 +711,12 @@ public class RDFMapperTests {
 		aObj.mMap.put(new Person("another person"), new Company("The company"));
 
 		final Model aGraph = RDFMapper.builder()
-		                              .map(FOAF.ontology().Person, Person.class)
-		                              .build()
-		                              .writeValue(aObj);
+				.map(FOAF.ontology().Person, Person.class)
+				.build()
+				.writeValue(aObj);
 
 		assertTrue(Models.isomorphic(aGraph,
-		                            ModelIO.read(Files3.classPath("/data/map.nt").toPath())));
+				ModelIO.read(Files3.classPath("/data/map.nt").toPath())));
 	}
 
 	@Test
@@ -734,20 +733,20 @@ public class RDFMapperTests {
 		final Model aGraph = ModelIO.read(Files3.classPath("/data/map.nt").toPath());
 
 		assertEquals(aExpected, RDFMapper.builder()
-		                                 .map(FOAF.ontology().Person, Person.class)
-		                                 .map(SimpleValueFactory.getInstance().createIRI("urn:Company"), Company.class)
-		                                 .build()
-		                                 .readValue(aGraph, ClassWithMap.class,
-		                                                    SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:06f95e70fea33fcd99e6804b02f96cc9")));
+				.map(FOAF.ontology().Person, Person.class)
+				.map(SimpleValueFactory.getInstance().createIRI("urn:Company"), Company.class)
+				.build()
+				.readValue(aGraph, ClassWithMap.class,
+						SimpleValueFactory.getInstance().createIRI("tag:complexible:pinto:06f95e70fea33fcd99e6804b02f96cc9")));
 	}
 
 	@Test
-	public void performanceTestBeansToRdfOne(){
+	public void performanceTestBeansToRdfOne() {
 		ArrayList<Long> times = new ArrayList<>();
 
 		Person p = new Person("Peter");
 
-		for(int j = 0; j < 3; ++j){
+		for (int j = 0; j < 3; ++j) {
 			long start = System.nanoTime();
 
 			Model m = RDFMapper.create().writeValue(p);
@@ -768,7 +767,7 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	public void performanceTestBeansToRdfThousand(){
+	public void performanceTestBeansToRdfThousand() {
 		ArrayList<Long> times = new ArrayList<>();
 
 		Person p = new Person("Peter");
@@ -776,11 +775,11 @@ public class RDFMapperTests {
 		int randomDestrutor = 0;
 		Random rand = new Random();
 
-		for(int j = 0; j < 3; ++j){
+		for (int j = 0; j < 3; ++j) {
 			long start = System.nanoTime();
 
-			for(int i = 0; i < 1000; ++i) {
-				if(rand.nextInt(2) == 1)
+			for (int i = 0; i < 1000; ++i) {
+				if (rand.nextInt(2) == 1)
 					randomDestrutor += 1;
 
 				Model m = RDFMapper.create().writeValue(p);
@@ -800,7 +799,7 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	public void performanceTestBeansToRdfMillion(){
+	public void performanceTestBeansToRdfMillion() {
 		ArrayList<Long> times = new ArrayList<>();
 
 		Person p = new Person("Peter");
@@ -808,11 +807,11 @@ public class RDFMapperTests {
 		int randomDestrutor = 0;
 		Random rand = new Random();
 
-		for(int j = 0; j < 3; ++j){
+		for (int j = 0; j < 3; ++j) {
 			long start = System.nanoTime();
 
-			for(int i = 0; i < 1000000; ++i) {
-				if(rand.nextInt(2) == 1)
+			for (int i = 0; i < 1000000; ++i) {
+				if (rand.nextInt(2) == 1)
 					randomDestrutor += 1;
 
 				Model m = RDFMapper.create().writeValue(p);
@@ -832,14 +831,14 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	public void performanceTestRdfToBeansOne(){
+	public void performanceTestRdfToBeansOne() {
 		ArrayList<Long> times = new ArrayList<>();
 
 		Person p = new Person("Peter");
 
 		Model model = RDFMapper.create().writeValue(p);
 
-		for(int j = 0; j < 3; ++j) {
+		for (int j = 0; j < 3; ++j) {
 			long start = System.nanoTime();
 
 			Person temp = RDFMapper.create().readValue(model, Person.class);
@@ -859,7 +858,7 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	public void performanceTestRdfToBeansThousand(){
+	public void performanceTestRdfToBeansThousand() {
 		ArrayList<Long> times = new ArrayList<>();
 
 		Person p = new Person("Peter");
@@ -869,11 +868,11 @@ public class RDFMapperTests {
 		int randomDestrutor = 0;
 		Random rand = new Random();
 
-		for(int j = 0; j < 3; ++j) {
+		for (int j = 0; j < 3; ++j) {
 			long start = System.nanoTime();
 
-			for(int i = 0; i < 1000; ++i) {
-				if(rand.nextInt(2) == 1)
+			for (int i = 0; i < 1000; ++i) {
+				if (rand.nextInt(2) == 1)
 					randomDestrutor += 1;
 
 				Person temp = RDFMapper.create().readValue(model, Person.class);
@@ -894,7 +893,7 @@ public class RDFMapperTests {
 	}
 
 	@Test
-	public void performanceTestRdfToBeansMillions(){
+	public void performanceTestRdfToBeansMillions() {
 		ArrayList<Long> times = new ArrayList<>();
 
 		Person p = new Person("Peter");
@@ -904,11 +903,11 @@ public class RDFMapperTests {
 		int randomDestrutor = 0;
 		Random rand = new Random();
 
-		for(int j = 0; j < 3; ++j) {
+		for (int j = 0; j < 3; ++j) {
 			long start = System.nanoTime();
 
-			for(int i = 0; i < 1000000; ++i) {
-				if(rand.nextInt(2) == 1)
+			for (int i = 0; i < 1000000; ++i) {
+				if (rand.nextInt(2) == 1)
 					randomDestrutor += 1;
 
 				Person temp = RDFMapper.create().readValue(model, Person.class);
@@ -927,8 +926,8 @@ public class RDFMapperTests {
 
 		System.out.print("average elapsed time: " + (sum / times.size()) + "ns\n");
 	}
-  
-  //Újak
+
+	//Újak
 
 	//TODO
 	@Test
@@ -995,7 +994,7 @@ public class RDFMapperTests {
 
 	public String buildLongString() {
 		StringBuilder longStringBuilder = new StringBuilder();
-		for(int i=0; i<1000000; ++i){
+		for (int i = 0; i < 1000000; ++i) {
 			longStringBuilder.append("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		}
 		return longStringBuilder.toString();
@@ -1019,7 +1018,7 @@ public class RDFMapperTests {
 	@Test
 	public void testLongUri() throws Exception {
 		ClassWithPrimitives cwp = new ClassWithPrimitives();
-		cwp.id(SimpleValueFactory.getInstance().createIRI("urn:"+buildLongString()));
+		cwp.id(SimpleValueFactory.getInstance().createIRI("urn:" + buildLongString()));
 		final Model md = RDFMapper.create().writeValue(cwp);
 	}
 
@@ -1078,7 +1077,7 @@ public class RDFMapperTests {
 		final Model modelOfCompositeObject = RDFMapper.create().writeValue(cls);
 		ClassWithRdfsClassAnnotation deserialized = RDFMapper.create().readValue(modelOfCompositeObject, ClassWithRdfsClassAnnotation.class);
 
-		assert(deserialized instanceof ClassWithRdfsClassAnnotation);
+		assert (deserialized instanceof ClassWithRdfsClassAnnotation);
 	}
 
 	//TODO
@@ -1098,28 +1097,33 @@ public class RDFMapperTests {
 		final Model modelOfCompositeObject = RDFMapper.create().writeValue(cls);
 		ClassWithRdfsClassAnnotation deserialized = RDFMapper.create().readValue(modelOfCompositeObject, ClassWithRdfsClassAnnotation.class);
 
-		assert(deserialized instanceof ClassWithRdfsClassAnnotation &&
+		assert (deserialized instanceof ClassWithRdfsClassAnnotation &&
 				deserialized.instanceOfPropClass instanceof PropertyClass);
 	}
 
 	@RdfsClass("foaf:PropertyClass")
 	public static class PropertyClass {
 		public float someValue;
-		public PropertyClass() { }
+
+		public PropertyClass() {
+		}
+
 		@Override
-		public int hashCode() {return Objects.hashCode(someValue); }
+		public int hashCode() {
+			return Objects.hashCode(someValue);
+		}
+
 		@Override
 		public boolean equals(final Object theObj) {
 			if (theObj == this) {
 				return true;
-			}
-			else if (theObj instanceof PropertyClass) {
+			} else if (theObj instanceof PropertyClass) {
 				return Objects.equals(someValue, ((PropertyClass) theObj).someValue);
-			}
-			else {
+			} else {
 				return false;
 			}
 		}
+
 		@Override
 		public String toString() {
 			return String.valueOf(someValue);
@@ -1131,228 +1135,223 @@ public class RDFMapperTests {
 		public String someValue;
 		public PropertyClass instanceOfPropClass;
 
-		public ClassWithRdfsClassAnnotation() {}
+		public ClassWithRdfsClassAnnotation() {
+		}
+
 		@Override
 		public int hashCode() {
 			return 0;
 		}
+
 		@Override
 		public boolean equals(final Object theObj) {
 			if (theObj == this) {
 				return true;
-			}
-			else if (theObj instanceof ClassWithRdfsClassAnnotation) {
+			} else if (theObj instanceof ClassWithRdfsClassAnnotation) {
 				return Objects.equals(someValue, ((ClassWithRdfsClassAnnotation) theObj).someValue)
 						&& Objects.equals(instanceOfPropClass, ((ClassWithRdfsClassAnnotation) theObj).instanceOfPropClass);
-			}
-			else {
-				return false;
-			}
-		}
-
-	public static final class Files3 {
-		public static File classPath(final String thePath) {
-			try {
-				return new File(Files3.class.getResource(thePath).toURI());
-			}
-			catch (URISyntaxException e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-
-	public enum TestEnum {
-		@Iri("invalid URI")
-		Foo,
-
-		@Iri("urn:TestEnum:Bar")
-		Bar,
-
-		Baz
-	}
-
-	public static class CannotConstructMe {
-		public CannotConstructMe(final String theValue) {
-		}
-	}
-
-	public static abstract class CannotConstructMe2 {
-		public CannotConstructMe2() {
-		}
-	}
-
-	@RdfsClass("fo:Company")
-	public static final class ShortCompany {
-
-		private String mName;
-		private String mWebsite;
-		private Integer mNumberOfEmployees;
-
-		@RdfId
-		@RdfProperty("foaf:name")
-		public String getName() {
-			return mName;
-		}
-
-		public void setName(final String theName) {
-			mName = theName;
-		}
-
-		@RdfId
-		public String getWebsite() {
-			return mWebsite;
-		}
-
-		public void setWebsite(final String theWebsite) {
-			mWebsite = theWebsite;
-		}
-
-		@RdfProperty(datatype="xs:integer")
-		public Integer getNumberOfEmployees() {
-			return mNumberOfEmployees;
-		}
-
-		public void setNumberOfEmployees(final Integer theNumberOfEmployees) {
-			mNumberOfEmployees = theNumberOfEmployees;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(mName, mWebsite);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
-			}
-			else if (theObj instanceof ShortCompany) {
-				ShortCompany aObj = (ShortCompany) theObj;
-				return mNumberOfEmployees == aObj.mNumberOfEmployees
-				       && Objects.equals(mName, aObj.mName)
-				       && Objects.equals(mWebsite, aObj.mWebsite);
-			}
-			else {
+			} else {
 				return false;
 			}
 		}
 	}
 
-	@RdfsClass("not a valid uri")
-	public static final class BadCompany {
-		private String mName;
-		private String mWebsite;
-		private int mNumberOfEmployees;
-
-		@RdfProperty("not a valid uri")
-		public String getName() {
-			return mName;
-		}
-
-		public void setName(final String theName) {
-			mName = theName;
-		}
-
-		public String getWebsite() {
-			return mWebsite;
-		}
-
-		public void setWebsite(final String theWebsite) {
-			mWebsite = theWebsite;
-		}
-
-		@RdfProperty(datatype="not a valid uri")
-		public int getNumberOfEmployees() {
-			return mNumberOfEmployees;
-		}
-
-		public void setNumberOfEmployees(final int theNumberOfEmployees) {
-			mNumberOfEmployees = theNumberOfEmployees;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(mName, mWebsite);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
-			}
-			else if (theObj instanceof BadCompany) {
-				BadCompany aObj = (BadCompany) theObj;
-				return Objects.equals(mName, aObj.mName) && Objects.equals(mWebsite, aObj.mWebsite);
-			}
-			else {
-				return false;
+		public static final class Files3 {
+			public static File classPath(final String thePath) {
+				try {
+					return new File(Files3.class.getResource(thePath).toURI());
+				} catch (URISyntaxException e) {
+					throw new RuntimeException(e);
+				}
 			}
 		}
-	}
 
-	@RdfsClass("urn:Company")
-	public static final class Company {
+		public enum TestEnum {
+			@Iri("invalid URI")
+			Foo,
 
-		private String mName;
-		private String mWebsite;
-		private Integer mNumberOfEmployees;
+			@Iri("urn:TestEnum:Bar")
+			Bar,
 
-		public Company() {
+			Baz
 		}
 
-		public Company(final String theName) {
-			mName = theName;
-		}
-
-		@RdfId
-		@RdfProperty("urn:name")
-		public String getName() {
-			return mName;
-		}
-
-		public void setName(final String theName) {
-			mName = theName;
-		}
-
-		@RdfId
-		public String getWebsite() {
-			return mWebsite;
-		}
-
-		public void setWebsite(final String theWebsite) {
-			mWebsite = theWebsite;
-		}
-
-		@RdfProperty(datatype="http://www.w3.org/2001/XMLSchema#integer")
-		public Integer getNumberOfEmployees() {
-			return mNumberOfEmployees;
-		}
-
-		public void setNumberOfEmployees(final Integer theNumberOfEmployees) {
-			mNumberOfEmployees = theNumberOfEmployees;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(mName, mWebsite);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
-			}
-			else if (theObj instanceof Company) {
-				Company aObj = (Company) theObj;
-				return Objects.equals(mName, aObj.mName) && Objects.equals(mWebsite, aObj.mWebsite);
-			}
-			else {
-				return false;
+		public static class CannotConstructMe {
+			public CannotConstructMe(final String theValue) {
 			}
 		}
-	}
 
-	public static class ClassWithEnumSet /*implements Identifiable*/ {
+		public static abstract class CannotConstructMe2 {
+			public CannotConstructMe2() {
+			}
+		}
+
+		@RdfsClass("fo:Company")
+		public static final class ShortCompany {
+
+			private String mName;
+			private String mWebsite;
+			private Integer mNumberOfEmployees;
+
+			@RdfId
+			@RdfProperty("foaf:name")
+			public String getName() {
+				return mName;
+			}
+
+			public void setName(final String theName) {
+				mName = theName;
+			}
+
+			@RdfId
+			public String getWebsite() {
+				return mWebsite;
+			}
+
+			public void setWebsite(final String theWebsite) {
+				mWebsite = theWebsite;
+			}
+
+			@RdfProperty(datatype = "xs:integer")
+			public Integer getNumberOfEmployees() {
+				return mNumberOfEmployees;
+			}
+
+			public void setNumberOfEmployees(final Integer theNumberOfEmployees) {
+				mNumberOfEmployees = theNumberOfEmployees;
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(mName, mWebsite);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof ShortCompany) {
+					ShortCompany aObj = (ShortCompany) theObj;
+					return mNumberOfEmployees == aObj.mNumberOfEmployees
+							&& Objects.equals(mName, aObj.mName)
+							&& Objects.equals(mWebsite, aObj.mWebsite);
+				} else {
+					return false;
+				}
+			}
+		}
+
+		@RdfsClass("not a valid uri")
+		public static final class BadCompany {
+			private String mName;
+			private String mWebsite;
+			private int mNumberOfEmployees;
+
+			@RdfProperty("not a valid uri")
+			public String getName() {
+				return mName;
+			}
+
+			public void setName(final String theName) {
+				mName = theName;
+			}
+
+			public String getWebsite() {
+				return mWebsite;
+			}
+
+			public void setWebsite(final String theWebsite) {
+				mWebsite = theWebsite;
+			}
+
+			@RdfProperty(datatype = "not a valid uri")
+			public int getNumberOfEmployees() {
+				return mNumberOfEmployees;
+			}
+
+			public void setNumberOfEmployees(final int theNumberOfEmployees) {
+				mNumberOfEmployees = theNumberOfEmployees;
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(mName, mWebsite);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof BadCompany) {
+					BadCompany aObj = (BadCompany) theObj;
+					return Objects.equals(mName, aObj.mName) && Objects.equals(mWebsite, aObj.mWebsite);
+				} else {
+					return false;
+				}
+			}
+		}
+
+		@RdfsClass("urn:Company")
+		public static final class Company {
+
+			private String mName;
+			private String mWebsite;
+			private Integer mNumberOfEmployees;
+
+			public Company() {
+			}
+
+			public Company(final String theName) {
+				mName = theName;
+			}
+
+			@RdfId
+			@RdfProperty("urn:name")
+			public String getName() {
+				return mName;
+			}
+
+			public void setName(final String theName) {
+				mName = theName;
+			}
+
+			@RdfId
+			public String getWebsite() {
+				return mWebsite;
+			}
+
+			public void setWebsite(final String theWebsite) {
+				mWebsite = theWebsite;
+			}
+
+			@RdfProperty(datatype = "http://www.w3.org/2001/XMLSchema#integer")
+			public Integer getNumberOfEmployees() {
+				return mNumberOfEmployees;
+			}
+
+			public void setNumberOfEmployees(final Integer theNumberOfEmployees) {
+				mNumberOfEmployees = theNumberOfEmployees;
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(mName, mWebsite);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof Company) {
+					Company aObj = (Company) theObj;
+					return Objects.equals(mName, aObj.mName) && Objects.equals(mWebsite, aObj.mWebsite);
+				} else {
+					return false;
+				}
+			}
+		}
+
+		public static class ClassWithEnumSet /*implements Identifiable*/ {
 
 		/*private Identifiable mIdentifiable = new IdentifiableImpl();
 
@@ -1366,594 +1365,576 @@ public class RDFMapperTests {
 			mIdentifiable.id(theResource);
 		}*/
 
-		private EnumSet<TestEnum> mEnums = EnumSet.noneOf(TestEnum.class);
+			private EnumSet<TestEnum> mEnums = EnumSet.noneOf(TestEnum.class);
 
-		public EnumSet<TestEnum> getEnums() {
-			return mEnums;
-		}
-
-		public void setEnums(final EnumSet<TestEnum> theEnums) {
-			mEnums = theEnums;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(mEnums);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
+			public EnumSet<TestEnum> getEnums() {
+				return mEnums;
 			}
-			else if (theObj instanceof ClassWithEnumSet) {
-				return Objects.equals(mEnums, ((ClassWithEnumSet) theObj).mEnums);
+
+			public void setEnums(final EnumSet<TestEnum> theEnums) {
+				mEnums = theEnums;
 			}
-			else {
-				return false;
+
+			@Override
+			public int hashCode() {
+				return Objects.hashCode(mEnums);
 			}
-		}
-	}
 
-	public static class ClassWithEnum implements Identifiable {
-		private TestEnum mValue;
-
-		private Identifiable mIdentifiable = new IdentifiableImpl();
-
-		@Override
-		public Resource id() {
-			return mIdentifiable.id();
-		}
-
-		@Override
-		public void id(final Resource theResource) {
-			mIdentifiable.id(theResource);
-		}
-
-		public TestEnum getValue() {
-			return mValue;
-		}
-
-		public void setValue(final TestEnum theValue) {
-			mValue = theValue;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(mValue);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
-			}
-			else if (theObj instanceof ClassWithEnum) {
-				ClassWithEnum aObj = (ClassWithEnum) theObj;
-
-				return Objects.equals(mValue, aObj.mValue);
-			}
-			else {
-				return false;
-			}
-		}
-	}
-
-	public static class ClassWithPrimitiveRdfList implements Identifiable {
-		private List<Integer> mInts = Lists.newArrayList();
-
-		private Identifiable mIdentifiable = new IdentifiableImpl();
-
-		@Override
-		public Resource id() {
-			return mIdentifiable.id();
-		}
-
-		@Override
-		public void id(final Resource theResource) {
-			mIdentifiable.id(theResource);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(mInts);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
-			}
-			else if (theObj instanceof ClassWithPrimitiveLists) {
-				ClassWithPrimitiveLists aObj = (ClassWithPrimitiveLists) theObj;
-
-				return Objects.equals(mInts, aObj.mInts);
-			}
-			else {
-				return false;
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof ClassWithEnumSet) {
+					return Objects.equals(mEnums, ((ClassWithEnumSet) theObj).mEnums);
+				} else {
+					return false;
+				}
 			}
 		}
 
-		@RdfProperty(isList = true)
-		public List<Integer> getInts() {
-			return mInts;
-		}
+		public static class ClassWithEnum implements Identifiable {
+			private TestEnum mValue;
 
-		public void setInts(final List<Integer> theInts) {
-			mInts = theInts;
-		}
-	}
+			private Identifiable mIdentifiable = new IdentifiableImpl();
 
-	public static final class Person implements Comparable<Person>, Identifiable {
-		private String mName;
-
-		private Identifiable mIdentifiable = new IdentifiableImpl();
-
-		public Person() {
-		}
-
-		public Person(final String theName) {
-			mName = theName;
-		}
-
-		@Override
-		public String toString() {
-			return mName;
-		}
-
-		@Override
-		public Resource id() {
-			return mIdentifiable.id();
-		}
-
-		@Override
-		public void id(final Resource theResource) {
-			mIdentifiable.id(theResource);
-		}
-
-		public String getName() {
-			return mName;
-		}
-
-		public void setName(final String theName) {
-			mName = theName;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(mName);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
+			@Override
+			public Resource id() {
+				return mIdentifiable.id();
 			}
-			else if (theObj instanceof Person) {
-				return Objects.equals(mName, ((Person) theObj).mName);
+
+			@Override
+			public void id(final Resource theResource) {
+				mIdentifiable.id(theResource);
 			}
-			else {
-				return false;
+
+			public TestEnum getValue() {
+				return mValue;
+			}
+
+			public void setValue(final TestEnum theValue) {
+				mValue = theValue;
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hashCode(mValue);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof ClassWithEnum) {
+					ClassWithEnum aObj = (ClassWithEnum) theObj;
+
+					return Objects.equals(mValue, aObj.mValue);
+				} else {
+					return false;
+				}
 			}
 		}
 
-		@Override
-		public int compareTo(final Person thePerson) {
-			return mName.compareTo(thePerson.getName());
-		}
-	}
+		public static class ClassWithPrimitiveRdfList implements Identifiable {
+			private List<Integer> mInts = Lists.newArrayList();
 
+			private Identifiable mIdentifiable = new IdentifiableImpl();
 
-	/**
-	 * We can get collections which have a different order than the original when we don't use the rdf:list
-	 * serialized collection.  But order will matter in an .equals call.  in real usage, if order matters,
-	 * users will use the rdf:list version.  for now, we just want to make sure the collections have the same
-	 * elements and are of the same type.  that's sufficient.
-	 */
-	private static <T> boolean equalsTypeAndContents(Collection<T> theCollection, final Collection<T> theOther) {
-		return (theCollection == null && theOther == null)
-		       || (theCollection != null && theOther != null
-		           && theCollection.getClass() == theOther.getClass()
-		           && Sets.newHashSet(theCollection).equals(Sets.newHashSet(theOther)));
-	}
-
-	@Test
-	public void checkCWOL() throws Exception {
-
-		ClassWithObjectList cw = new ClassWithObjectList();
-		cw.id(SimpleValueFactory.getInstance().createIRI("urn:ClassWithObjectList"));
-
-		final Model md = RDFMapper.create().writeValue(cw);
-		ClassWithObjectList des = RDFMapper.create().readValue(md, ClassWithObjectList.class);
-
-		Person p = new Person();
-		p.id(SimpleValueFactory.getInstance().createIRI("urn:Person"));
-		List<Person> people = new ArrayList<Person>();
-		people.add(p);
-		des.setList(people);
-		final Model modelWithPersonAdded = RDFMapper.create().writeValue(des);
-		ClassWithObjectList des2 = RDFMapper.create().readValue(modelWithPersonAdded, ClassWithObjectList.class);
-
-
-	}
-
-	public static class ClassWithObjectList implements Identifiable {
-		private List<Person> mList = Lists.newArrayList();
-
-		private Set<Person> mSet = Sets.newLinkedHashSet();
-
-		private Collection<Person> mCollection = Sets.newLinkedHashSet();
-
-		private SortedSet<Person> mSortedSet = Sets.newTreeSet();
-
-		private Identifiable mIdentifiable = new IdentifiableImpl();
-
-		@Override
-		public Resource id() {
-			return mIdentifiable.id();
-		}
-
-		@Override
-		public void id(final Resource theResource) {
-			mIdentifiable.id(theResource);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(mList, mSet, mCollection, mSortedSet);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
+			@Override
+			public Resource id() {
+				return mIdentifiable.id();
 			}
-			else if (theObj instanceof ClassWithObjectList) {
-				ClassWithObjectList aObj = (ClassWithObjectList) theObj;
 
-				return equalsTypeAndContents(mList, aObj.mList)
-				       && equalsTypeAndContents(mSet, aObj.mSet)
-				       && equalsTypeAndContents(mCollection, aObj.mCollection)
-				       && equalsTypeAndContents(mSortedSet, aObj.mSortedSet);
+			@Override
+			public void id(final Resource theResource) {
+				mIdentifiable.id(theResource);
 			}
-			else {
-				return false;
+
+			@Override
+			public int hashCode() {
+				return Objects.hashCode(mInts);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof ClassWithPrimitiveLists) {
+					ClassWithPrimitiveLists aObj = (ClassWithPrimitiveLists) theObj;
+
+					return Objects.equals(mInts, aObj.mInts);
+				} else {
+					return false;
+				}
+			}
+
+			@RdfProperty(isList = true)
+			public List<Integer> getInts() {
+				return mInts;
+			}
+
+			public void setInts(final List<Integer> theInts) {
+				mInts = theInts;
 			}
 		}
 
-		public Collection<Person> getCollection() {
-			return mCollection;
-		}
+		public static final class Person implements Comparable<Person>, Identifiable {
+			private String mName;
 
-		public void setCollection(final Collection<Person> theCollection) {
-			mCollection = theCollection;
-		}
+			private Identifiable mIdentifiable = new IdentifiableImpl();
 
-		public List<Person> getList() {
-			return mList;
-		}
-
-		public void setList(final List<Person> theList) {
-			mList = theList;
-		}
-
-		public Set<Person> getSet() {
-			return mSet;
-		}
-
-		public void setSet(final Set<Person> theSet) {
-			mSet = theSet;
-		}
-
-		public SortedSet<Person> getSortedSet() {
-			return mSortedSet;
-		}
-
-		public void setSortedSet(final SortedSet<Person> theSortedSet) {
-			mSortedSet = theSortedSet;
-		}
-	}
-
-	public static class ClassWithRdfObjectList implements Identifiable {
-		private List<Person> mList = Lists.newArrayList();
-
-		private Identifiable mIdentifiable = new IdentifiableImpl();
-
-		@Override
-		public Resource id() {
-			return mIdentifiable.id();
-		}
-
-		@Override
-		public void id(final Resource theResource) {
-			mIdentifiable.id(theResource);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(mList);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
+			public Person() {
 			}
-			else if (theObj instanceof ClassWithRdfObjectList) {
-				ClassWithRdfObjectList aObj = (ClassWithRdfObjectList) theObj;
 
-				return Objects.equals(mList, aObj.mList);
+			public Person(final String theName) {
+				mName = theName;
 			}
-			else {
-				return false;
+
+			@Override
+			public String toString() {
+				return mName;
+			}
+
+			@Override
+			public Resource id() {
+				return mIdentifiable.id();
+			}
+
+			@Override
+			public void id(final Resource theResource) {
+				mIdentifiable.id(theResource);
+			}
+
+			public String getName() {
+				return mName;
+			}
+
+			public void setName(final String theName) {
+				mName = theName;
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hashCode(mName);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof Person) {
+					return Objects.equals(mName, ((Person) theObj).mName);
+				} else {
+					return false;
+				}
+			}
+
+			@Override
+			public int compareTo(final Person thePerson) {
+				return mName.compareTo(thePerson.getName());
 			}
 		}
 
-		@RdfProperty(isList = true)
-		public List<Person> getList() {
-			return mList;
+
+		/**
+		 * We can get collections which have a different order than the original when we don't use the rdf:list
+		 * serialized collection.  But order will matter in an .equals call.  in real usage, if order matters,
+		 * users will use the rdf:list version.  for now, we just want to make sure the collections have the same
+		 * elements and are of the same type.  that's sufficient.
+		 */
+		private static <T> boolean equalsTypeAndContents(Collection<T> theCollection, final Collection<T> theOther) {
+			return (theCollection == null && theOther == null)
+					|| (theCollection != null && theOther != null
+					&& theCollection.getClass() == theOther.getClass()
+					&& Sets.newHashSet(theCollection).equals(Sets.newHashSet(theOther)));
 		}
 
-		public void setList(final List<Person> theList) {
-			mList = theList;
-		}
-	}
+		@Test
+		public void checkCWOL() throws Exception {
 
-	public static class ClassWithPrimitiveLists implements Identifiable {
-		private List<Integer> mInts = Lists.newArrayList();
+			ClassWithObjectList cw = new ClassWithObjectList();
+			cw.id(SimpleValueFactory.getInstance().createIRI("urn:ClassWithObjectList"));
 
-		private Set<Float> mFloats = Sets.newLinkedHashSet();
+			final Model md = RDFMapper.create().writeValue(cw);
+			ClassWithObjectList des = RDFMapper.create().readValue(md, ClassWithObjectList.class);
 
-		private Collection<Double> mDoubles = Sets.newLinkedHashSet();
+			Person p = new Person();
+			p.id(SimpleValueFactory.getInstance().createIRI("urn:Person"));
+			List<Person> people = new ArrayList<Person>();
+			people.add(p);
+			des.setList(people);
+			final Model modelWithPersonAdded = RDFMapper.create().writeValue(des);
+			ClassWithObjectList des2 = RDFMapper.create().readValue(modelWithPersonAdded, ClassWithObjectList.class);
 
-		private SortedSet<Boolean> mBools = Sets.newTreeSet();
 
-		private Identifiable mIdentifiable = new IdentifiableImpl();
-
-		@Override
-		public Resource id() {
-			return mIdentifiable.id();
-		}
-
-		@Override
-		public void id(final Resource theResource) {
-			mIdentifiable.id(theResource);
 		}
 
-		@Override
-		public int hashCode() {
-			return Objects.hash(mInts, mFloats, mDoubles, mBools);
-		}
+		public static class ClassWithObjectList implements Identifiable {
+			private List<Person> mList = Lists.newArrayList();
 
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
-			}
-			else if (theObj instanceof ClassWithPrimitiveLists) {
-				ClassWithPrimitiveLists aObj = (ClassWithPrimitiveLists) theObj;
+			private Set<Person> mSet = Sets.newLinkedHashSet();
 
-				return equalsTypeAndContents(mInts, aObj.mInts)
-				    && equalsTypeAndContents(mFloats, aObj.mFloats)
-				    && equalsTypeAndContents(mDoubles, aObj.mDoubles)
-				    && equalsTypeAndContents(mBools, aObj.mBools);
-			}
-			else {
-				return false;
-			}
-		}
+			private Collection<Person> mCollection = Sets.newLinkedHashSet();
 
-		public SortedSet<Boolean> getBools() {
-			return mBools;
-		}
+			private SortedSet<Person> mSortedSet = Sets.newTreeSet();
 
-		public void setBools(final SortedSet<Boolean> theBools) {
-			mBools = theBools;
-		}
+			private Identifiable mIdentifiable = new IdentifiableImpl();
 
-		public Collection<Double> getDoubles() {
-			return mDoubles;
-		}
-
-		public void setDoubles(final Collection<Double> theDoubles) {
-			mDoubles = theDoubles;
-		}
-
-		public Set<Float> getFloats() {
-			return mFloats;
-		}
-
-		public void setFloats(final Set<Float> theFloats) {
-			mFloats = theFloats;
-		}
-
-		public List<Integer> getInts() {
-			return mInts;
-		}
-
-		public void setInts(final List<Integer> theInts) {
-			mInts = theInts;
-		}
-	}
-
-	public static class ClassWithMixed implements Identifiable {
-		private ClassWithPrimitives mChild;
-
-		private String mString;
-
-		private Identifiable mIdentifiable = new IdentifiableImpl();
-
-		@Override
-		public Resource id() {
-			return mIdentifiable.id();
-		}
-
-		@Override
-		public void id(final Resource theResource) {
-			mIdentifiable.id(theResource);
-		}
-
-		public String getString() {
-			return mString;
-		}
-
-		public void setString(final String theString) {
-			mString = theString;
-		}
-
-		public ClassWithPrimitives getChild() {
-			return mChild;
-		}
-
-		public void setChild(final ClassWithPrimitives theChild) {
-			mChild = theChild;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(mString, mChild);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
-			}
-			else if (theObj instanceof ClassWithMixed) {
-				ClassWithMixed aObj = (ClassWithMixed) theObj;
-				return Objects.equals(mString, aObj.mString)
-						&& Objects.equals(mChild, aObj.mChild);
-			}
-			else {
-				return false;
-			}
-		}
-	}
-
-	public static class ClassWithPrimitives implements Identifiable {
-		private String mString;
-		private int mInt;
-		private java.net.URI mURI;
-		private float mFloat;
-		private double mDouble;
-		private char mChar;
-
-		private Identifiable mIdentifiable = new IdentifiableImpl();
-
-		@Override
-		public Resource id() {
-			return mIdentifiable.id();
-		}
-
-		@Override
-		public void id(final Resource theResource) {
-			mIdentifiable.id(theResource);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (this == theObj) {
-				return true;
-			}
-			if (theObj == null || getClass() != theObj.getClass()) {
-				return false;
+			@Override
+			public Resource id() {
+				return mIdentifiable.id();
 			}
 
-			ClassWithPrimitives that = (ClassWithPrimitives) theObj;
-
-			return mChar == that.mChar
-			       && Double.compare(mDouble, that.mDouble) == 0
-			       && Float.compare(mFloat, that.mFloat) == 0
-			       && mInt == that.mInt
-			       && Objects.equals(mString, that.mString)
-			       && Objects.equals(mURI, that.mURI);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(mChar, mDouble, mFloat, mInt, mString, mURI);
-		}
-
-		public char getChar() {
-			return mChar;
-		}
-
-		public void setChar(final char theChar) {
-			mChar = theChar;
-		}
-
-		public double getDouble() {
-			return mDouble;
-		}
-
-		public void setDouble(final double theDouble) {
-			mDouble = theDouble;
-		}
-
-		public float getFloat() {
-			return mFloat;
-		}
-
-		public void setFloat(final float theFloat) {
-			mFloat = theFloat;
-		}
-
-		public int getInt() {
-			return mInt;
-		}
-
-		public void setInt(final int theInt) {
-			mInt = theInt;
-		}
-
-		public String getString() {
-			return mString;
-		}
-
-		public void setString(final String theString) {
-			mString = theString;
-		}
-
-		public URI getURI() {
-			return mURI;
-		}
-
-		public void setURI(final URI theURI) {
-			mURI = theURI;
-		}
-	}
-
-	public static final class ClassWithMap {
-		private Map<Object, Object> mMap;
-
-		public Map<Object, Object> getMap() {
-			return mMap;
-		}
-
-		public void setMap(final Map<Object, Object> theMap) {
-			mMap = theMap;
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hashCode(mMap);
-		}
-
-		@Override
-		public boolean equals(final Object theObj) {
-			if (theObj == this) {
-				return true;
+			@Override
+			public void id(final Resource theResource) {
+				mIdentifiable.id(theResource);
 			}
-			else if (theObj instanceof ClassWithMap) {
-				return Objects.equals(mMap, ((ClassWithMap) theObj).mMap);
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(mList, mSet, mCollection, mSortedSet);
 			}
-			else {
-				return false;
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof ClassWithObjectList) {
+					ClassWithObjectList aObj = (ClassWithObjectList) theObj;
+
+					return equalsTypeAndContents(mList, aObj.mList)
+							&& equalsTypeAndContents(mSet, aObj.mSet)
+							&& equalsTypeAndContents(mCollection, aObj.mCollection)
+							&& equalsTypeAndContents(mSortedSet, aObj.mSortedSet);
+				} else {
+					return false;
+				}
+			}
+
+			public Collection<Person> getCollection() {
+				return mCollection;
+			}
+
+			public void setCollection(final Collection<Person> theCollection) {
+				mCollection = theCollection;
+			}
+
+			public List<Person> getList() {
+				return mList;
+			}
+
+			public void setList(final List<Person> theList) {
+				mList = theList;
+			}
+
+			public Set<Person> getSet() {
+				return mSet;
+			}
+
+			public void setSet(final Set<Person> theSet) {
+				mSet = theSet;
+			}
+
+			public SortedSet<Person> getSortedSet() {
+				return mSortedSet;
+			}
+
+			public void setSortedSet(final SortedSet<Person> theSortedSet) {
+				mSortedSet = theSortedSet;
+			}
+		}
+
+		public static class ClassWithRdfObjectList implements Identifiable {
+			private List<Person> mList = Lists.newArrayList();
+
+			private Identifiable mIdentifiable = new IdentifiableImpl();
+
+			@Override
+			public Resource id() {
+				return mIdentifiable.id();
+			}
+
+			@Override
+			public void id(final Resource theResource) {
+				mIdentifiable.id(theResource);
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hashCode(mList);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof ClassWithRdfObjectList) {
+					ClassWithRdfObjectList aObj = (ClassWithRdfObjectList) theObj;
+
+					return Objects.equals(mList, aObj.mList);
+				} else {
+					return false;
+				}
+			}
+
+			@RdfProperty(isList = true)
+			public List<Person> getList() {
+				return mList;
+			}
+
+			public void setList(final List<Person> theList) {
+				mList = theList;
+			}
+		}
+
+		public static class ClassWithPrimitiveLists implements Identifiable {
+			private List<Integer> mInts = Lists.newArrayList();
+
+			private Set<Float> mFloats = Sets.newLinkedHashSet();
+
+			private Collection<Double> mDoubles = Sets.newLinkedHashSet();
+
+			private SortedSet<Boolean> mBools = Sets.newTreeSet();
+
+			private Identifiable mIdentifiable = new IdentifiableImpl();
+
+			@Override
+			public Resource id() {
+				return mIdentifiable.id();
+			}
+
+			@Override
+			public void id(final Resource theResource) {
+				mIdentifiable.id(theResource);
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(mInts, mFloats, mDoubles, mBools);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof ClassWithPrimitiveLists) {
+					ClassWithPrimitiveLists aObj = (ClassWithPrimitiveLists) theObj;
+
+					return equalsTypeAndContents(mInts, aObj.mInts)
+							&& equalsTypeAndContents(mFloats, aObj.mFloats)
+							&& equalsTypeAndContents(mDoubles, aObj.mDoubles)
+							&& equalsTypeAndContents(mBools, aObj.mBools);
+				} else {
+					return false;
+				}
+			}
+
+			public SortedSet<Boolean> getBools() {
+				return mBools;
+			}
+
+			public void setBools(final SortedSet<Boolean> theBools) {
+				mBools = theBools;
+			}
+
+			public Collection<Double> getDoubles() {
+				return mDoubles;
+			}
+
+			public void setDoubles(final Collection<Double> theDoubles) {
+				mDoubles = theDoubles;
+			}
+
+			public Set<Float> getFloats() {
+				return mFloats;
+			}
+
+			public void setFloats(final Set<Float> theFloats) {
+				mFloats = theFloats;
+			}
+
+			public List<Integer> getInts() {
+				return mInts;
+			}
+
+			public void setInts(final List<Integer> theInts) {
+				mInts = theInts;
+			}
+		}
+
+		public static class ClassWithMixed implements Identifiable {
+			private ClassWithPrimitives mChild;
+
+			private String mString;
+
+			private Identifiable mIdentifiable = new IdentifiableImpl();
+
+			@Override
+			public Resource id() {
+				return mIdentifiable.id();
+			}
+
+			@Override
+			public void id(final Resource theResource) {
+				mIdentifiable.id(theResource);
+			}
+
+			public String getString() {
+				return mString;
+			}
+
+			public void setString(final String theString) {
+				mString = theString;
+			}
+
+			public ClassWithPrimitives getChild() {
+				return mChild;
+			}
+
+			public void setChild(final ClassWithPrimitives theChild) {
+				mChild = theChild;
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(mString, mChild);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof ClassWithMixed) {
+					ClassWithMixed aObj = (ClassWithMixed) theObj;
+					return Objects.equals(mString, aObj.mString)
+							&& Objects.equals(mChild, aObj.mChild);
+				} else {
+					return false;
+				}
+			}
+		}
+
+		public static class ClassWithPrimitives implements Identifiable {
+			private String mString;
+			private int mInt;
+			private java.net.URI mURI;
+			private float mFloat;
+			private double mDouble;
+			private char mChar;
+
+			private Identifiable mIdentifiable = new IdentifiableImpl();
+
+			@Override
+			public Resource id() {
+				return mIdentifiable.id();
+			}
+
+			@Override
+			public void id(final Resource theResource) {
+				mIdentifiable.id(theResource);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (this == theObj) {
+					return true;
+				}
+				if (theObj == null || getClass() != theObj.getClass()) {
+					return false;
+				}
+
+				ClassWithPrimitives that = (ClassWithPrimitives) theObj;
+
+				return mChar == that.mChar
+						&& Double.compare(mDouble, that.mDouble) == 0
+						&& Float.compare(mFloat, that.mFloat) == 0
+						&& mInt == that.mInt
+						&& Objects.equals(mString, that.mString)
+						&& Objects.equals(mURI, that.mURI);
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hash(mChar, mDouble, mFloat, mInt, mString, mURI);
+			}
+
+			public char getChar() {
+				return mChar;
+			}
+
+			public void setChar(final char theChar) {
+				mChar = theChar;
+			}
+
+			public double getDouble() {
+				return mDouble;
+			}
+
+			public void setDouble(final double theDouble) {
+				mDouble = theDouble;
+			}
+
+			public float getFloat() {
+				return mFloat;
+			}
+
+			public void setFloat(final float theFloat) {
+				mFloat = theFloat;
+			}
+
+			public int getInt() {
+				return mInt;
+			}
+
+			public void setInt(final int theInt) {
+				mInt = theInt;
+			}
+
+			public String getString() {
+				return mString;
+			}
+
+			public void setString(final String theString) {
+				mString = theString;
+			}
+
+			public URI getURI() {
+				return mURI;
+			}
+
+			public void setURI(final URI theURI) {
+				mURI = theURI;
+			}
+		}
+
+		public static final class ClassWithMap {
+			private Map<Object, Object> mMap;
+
+			public Map<Object, Object> getMap() {
+				return mMap;
+			}
+
+			public void setMap(final Map<Object, Object> theMap) {
+				mMap = theMap;
+			}
+
+			@Override
+			public int hashCode() {
+				return Objects.hashCode(mMap);
+			}
+
+			@Override
+			public boolean equals(final Object theObj) {
+				if (theObj == this) {
+					return true;
+				} else if (theObj instanceof ClassWithMap) {
+					return Objects.equals(mMap, ((ClassWithMap) theObj).mMap);
+				} else {
+					return false;
+				}
 			}
 		}
 	}
 
 
 
-}
 
