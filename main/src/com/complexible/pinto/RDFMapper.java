@@ -60,7 +60,6 @@ import org.openrdf.model.vocabulary.XMLSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.reflect.generics.reflectiveObjects.WildcardTypeImpl;
-
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -70,16 +69,7 @@ import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -115,7 +105,7 @@ public final class RDFMapper {
 	public static final IRI VALUE = SimpleValueFactory.getInstance().createIRI(DEFAULT_NAMESPACE, "_value");
 	public static final IRI HAS_ENTRY = SimpleValueFactory.getInstance().createIRI(DEFAULT_NAMESPACE, "_hasEntry");
 
-	private final ImmutableBiMap<IRI, Class> mMappings;
+	private final ImmutableBiMap<IRI, Class<?>> mMappings;
 
 	private final ImmutableMap<Class<?>, Function<Object, Resource>> mIdFunctions;
 
@@ -135,7 +125,7 @@ public final class RDFMapper {
 		PropertyUtils.addBeanIntrospector(new FluentPropertyBeanIntrospector());
 	}
 
-	private RDFMapper(final Map<IRI, Class> theMappings,
+	private RDFMapper(final Map<IRI, Class<?>> theMappings,
 	                  final Map<Class<?>, Function<Object, Resource>> theIdFunctions,
 	                  final ValueFactory theValueFactory,
 	                  final Map<String, String> theNamespaces,
@@ -203,13 +193,9 @@ public final class RDFMapper {
 
 	private static boolean isIgnored(final PropertyDescriptor thePropertyDescriptor) {
 		// we'll ignore getClass() on the bean
-		if (thePropertyDescriptor.getName().equals("class")
-		    && thePropertyDescriptor.getReadMethod().getDeclaringClass() == Object.class
-		    && thePropertyDescriptor.getReadMethod().getReturnType().equals(Class.class)) {
-			return  true;
-		}
-
-		return false;
+		return thePropertyDescriptor.getName().equals("class")
+				&& thePropertyDescriptor.getReadMethod().getDeclaringClass() == Object.class
+				&& thePropertyDescriptor.getReadMethod().getReturnType().equals(Class.class);
 	}
 
 	/**
@@ -249,7 +235,7 @@ public final class RDFMapper {
 				continue;
 			}
 			else if (Collection.class.isAssignableFrom(aDescriptor.getPropertyType())) {
-				final Collection aIterable = mCollectionFactory.create(aDescriptor);
+				final Collection<Object> aIterable = mCollectionFactory.create(aDescriptor);
 
 				Collection<Value> aElems = Lists.newArrayListWithCapacity(aValues.size());
 
@@ -286,7 +272,7 @@ public final class RDFMapper {
 
 				Value aPropValue = aValues.iterator().next();
 
-				final Map aMap = mMapFactory.create(aDescriptor);
+				final Map<Object,Object> aMap = mMapFactory.create(aDescriptor);
 
 				for (Value aMapEntry : theGraph.filter((Resource) aPropValue, HAS_ENTRY, null).objects()) {
 					final Value aKey = theGraph.stream().filter(Statements.subjectIs((Resource) aMapEntry).and(Statements.predicateIs(KEY))).map(Statement::getObject).findFirst().orElse(null);
@@ -351,10 +337,10 @@ public final class RDFMapper {
 		return aInst;
 	}
 
-	private Class type(final Model theGraph, final Resource theValue) {
+	private Class<?> type(final Model theGraph, final Resource theValue) {
 		final Iterable<Resource> aTypes = Models2.getTypes(theGraph, theValue);
 		for (Resource aType : aTypes) {
-			final Class aClass = mMappings.get(aType);
+			final Class<?> aClass = mMappings.get(aType);
 			if (aClass != null){
 				return aClass;
 			}
@@ -399,7 +385,7 @@ public final class RDFMapper {
 	@SuppressWarnings("unchecked")
 	private <T> ResourceBuilder write(final T theValue) {
 		// before we do anything, do we have a custom codec for this?
-		RDFCodec aCodec = mCodecs.get(theValue.getClass());
+		RDFCodec<T> aCodec = (RDFCodec<T>)mCodecs.get(theValue.getClass());
 		if (aCodec != null) {
 			final Value aResult = aCodec.writeValue(theValue);
 
@@ -460,7 +446,7 @@ public final class RDFMapper {
 			theBuilder.addProperty(theProperty, enumToURI((Enum) theObj));
 		}
 		else if (Collection.class.isAssignableFrom(theObj.getClass())) {
-			final Collection aCollection = (Collection) theObj;
+			final Collection<?> aCollection = (Collection<?>) theObj;
 
 			if (serializeCollectionsAsRDFList(thePropertyDescriptor)) {
 				List<Value> aList = Lists.newArrayListWithExpectedSize(aCollection.size());
@@ -493,11 +479,11 @@ public final class RDFMapper {
 			}
 		}
 		else if (Map.class.isAssignableFrom(theObj.getClass())) {
-			Map aMap = (Map) theObj;
+			Map<Class<?>, Class<?>> aMap = (Map) theObj;
 
 			if (!aMap.isEmpty()) {
 				ResourceBuilder aRes = theGraph.instance();
-				for (Map.Entry aMapEntry : (Set<Map.Entry>) aMap.entrySet()) {
+				for (Map.Entry aMapEntry : (Set<Map.Entry<Class<?>, Class<?>>>) aMap.entrySet()) {
 					ResourceBuilder aEntryRes = theGraph.instance();
 
 					setValue(theGraph, aEntryRes, null, KEY, aMapEntry.getKey());
@@ -510,7 +496,7 @@ public final class RDFMapper {
 			}
 		}
 		else {
-			RDFCodec aCodex = mCodecs.get(theObj.getClass());
+			RDFCodec<Object> aCodex = (RDFCodec<Object>) mCodecs.get(theObj.getClass());
 			if (aCodex != null) {
 				final Value aValue = aCodex.writeValue(theObj);
 
@@ -527,7 +513,7 @@ public final class RDFMapper {
 		}
 	}
 
-	private IRI enumToURI(final Enum theEnum) {
+	private IRI enumToURI(final Enum<?> theEnum) {
 		try {
 			final Iri aAnnotation = theEnum.getClass().getField(theEnum.name()).getAnnotation(Iri.class);
 
@@ -665,9 +651,9 @@ public final class RDFMapper {
 		else {
 			Resource aResource = (Resource) theValue;
 
-			final Class aClass = pinpointClass(theGraph, aResource, theDescriptor);
+			final Class<?> aClass = pinpointClass(theGraph, aResource, theDescriptor);
 
-			RDFCodec aCodec = mCodecs.get(aClass);
+			RDFCodec<?> aCodec = mCodecs.get(aClass);
 			if (aCodec != null) {
 				return aCodec.readValue(theGraph, aResource);
 			}
@@ -677,11 +663,11 @@ public final class RDFMapper {
 		}
 	}
 
-	private Class pinpointClass(final Model theGraph, final Resource theResource, final PropertyDescriptor theDescriptor) {
+	private Class<?> pinpointClass(final Model theGraph, final Resource theResource, final PropertyDescriptor theDescriptor) {
 		if(theDescriptor == null){
-			return null;
+			throw new NullPointerException();
 		}
-		Class aClass = theDescriptor.getPropertyType();
+		Class<?> aClass = theDescriptor.getPropertyType();
 
 		if (Collection.class.isAssignableFrom(aClass)) {
 			// if the field we're assigning from is a collection, try and figure out the type of the thing
@@ -690,7 +676,6 @@ public final class RDFMapper {
 			Type[] aTypes = null;
 
 			if (theDescriptor.getReadMethod().getGenericParameterTypes().length > 0) {
-				// should this be the return type? eg new Type[] { theDescriptor.getReadMethod().getGenericReturnType() };
 				aTypes = theDescriptor.getReadMethod().getGenericParameterTypes();
 			}
 			else if (theDescriptor.getWriteMethod().getGenericParameterTypes().length > 0) {
@@ -741,7 +726,7 @@ public final class RDFMapper {
 				}
 			}
 			else {
-				LOGGER.info("Could not find type for collection %s", aClass);
+				LOGGER.info("Could not find type for collection {}", aClass);
 			}
 		}
 		else if (!Classes.isInstantiable(aClass) || !Classes.hasDefaultConstructor(aClass)) {
@@ -976,7 +961,7 @@ public final class RDFMapper {
 	public static class Builder {
 		private static final Pattern PREFIX_REGEX = Pattern.compile("^([a-z]|[A-Z]|_){1}(\\w|-|\\.)*$");
 
-		private final Map<IRI, Class> mMappings = Maps.newHashMap();
+		private final Map<IRI, Class<?>> mMappings = Maps.newHashMap();
 
 		private final Map<Class<?>, Function<Object, Resource>> mIdFunctions = Maps.newHashMap();
 
@@ -1233,7 +1218,7 @@ public final class RDFMapper {
 				}
 				else {
 					// what else could there be?
-					throw new RuntimeException("Unknown or unsupported collection type for a field: " + aType);
+					throw new RDFMappingException("Unknown or unsupported collection type for a field: " + aType);
 				}
 			}
 		}
